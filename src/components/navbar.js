@@ -30,7 +30,7 @@ export default class Navigation extends React.Component {
     return (
       <div>
         <Navbar color="light" light expand="md">
-          <NavbarBrand href="/">reactstrap</NavbarBrand>
+          <NavbarBrand href="/">Bitpoll</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
@@ -41,6 +41,15 @@ export default class Navigation extends React.Component {
                 <NavLink href="/Feed/">Feed</NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/Feed/1">Election</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/newElection/">New Election</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/Dashboard/">Dashboard</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>
               </NavItem>
               <UncontrolledDropdown nav inNavbar>
@@ -49,7 +58,7 @@ export default class Navigation extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                     Profile
+                  <NavLink href="/Profile/">My Profile</NavLink>
                   </DropdownItem>
                   <DropdownItem>
                     Log Out

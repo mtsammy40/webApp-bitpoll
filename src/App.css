@@ -45,3 +45,35 @@
   display: table-cell;
   vertical-align: middle;
 }
+.brad{
+  border-radius: 20px;
+}
+
+/*--------- Dashboard css ---------*/
+.sidebar {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 20;
+  left: 0;
+  background-color: #005269;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+.sidebar a{
+  color: rgb(49, 49, 49);
+  width: 100%;
+  display: block;
+  background-color: #ebebeb;
+  padding: 8px;
+  text-decoration-style: none;
+}
+.sidebar a:hover{
+  background-color: #00c2f8;
+  color: white;
+  text-decoration: none;
+}
+.content-wrapper{
+ margin-left: 200px;
+}

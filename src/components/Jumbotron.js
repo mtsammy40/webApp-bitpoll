@@ -12,10 +12,10 @@ const Header = (props) => {
           <hr className="my-2" />
           <p>Are you part of the shift? Have you joined the movement? Does your vote count?(Literally)</p>
           <p className="lead">
-            <Button color="primary" href="/SignIn/">Sign Up</Button>
+            <Button color="primary" href="/SignUp/">Sign Up</Button>
           </p>
         </Col>
-        <Col className="pull-right" md={4}>
+        <Col className="pull-right float-right" md={4}>
           <Form>
             <FormGroup>
               <Label for="lgemailtb">Email</Label>
@@ -25,7 +25,7 @@ const Header = (props) => {
               <Label for="passtb">Password</Label>
               <Input type="email" placeholder="Someone@mail.com" name="lgemail" id="lgemailtb" />
             </FormGroup>
-            <Input type="submit" Value="Login" />
+            <Input type="submit" value="Login" />
           </Form>
         </Col>
         </Row>

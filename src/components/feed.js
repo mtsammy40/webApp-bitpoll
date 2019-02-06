@@ -6,9 +6,9 @@ export default class Feed extends React.Component{
     constructor(props){
         super(props);
         this.state= {
-            voterFeed:[{"id": "1", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm"},
-            {"id": "2", "name":"Do you like to eat?", "candidates":"Sam", "deadline":"12:00pm"},
-            {"id": "3", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm"} 
+            voterFeed:[{"id": "1", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"},
+            {"id": "2", "name":"Do you like to eat?", "candidates":"Sam", "deadline":"12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"},
+            {"id": "3", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"} 
         ]
          };
          this.loggedIn = {
@@ -31,7 +31,7 @@ export default class Feed extends React.Component{
         </Card>
         );
         return (
-            <Container>
+            <Container md={8}>
               <CardColumns>
               {feedlist}
               <Card body inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
