@@ -1,10 +1,12 @@
 import React from 'react';
-import { Col, Row, Button, Form, FormGroup, Label, Input, Container, FormText } from 'reactstrap';
+import { Col, Row, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import Api from '../api/api';
 export default class SignUp extends React.Component {
   constructor(props){
     super(props);
-    this.state =  {};
+    this.state =  {
+      "gender": "male" 
+    };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
   }
@@ -18,10 +20,11 @@ export default class SignUp extends React.Component {
   }
   handleSubmit(e){
     e.preventDefault();
-    Api.post('api/org.bitpoll.net.Voter', this.state).then(res => {
-      console.log('Api response', res);
-    }, (error)=>{
-      console.log(error.message)
+    Api.post('org.bitpoll.net.Voter', this.state).then(res => {
+        alert('successful');
+    }).catch(error => {
+        alert('Please recheck your data and retry');
+        console.log(error.response);
     });
   }
   render() {
@@ -38,7 +41,7 @@ export default class SignUp extends React.Component {
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label for="emailtb">Password</Label>
+                <Label for="emailtb">Email</Label>
                 <Input type="email" name="email" id="emailtb" placeholder="passomeone@mail.com" onChange={this.handleChange} />
               </FormGroup>
             </Col>
@@ -53,13 +56,16 @@ export default class SignUp extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="gendertb">Gender</Label>
-                <Input type="text" name="gender" id="gendertb" placeholder="male/female" onChange={this.handleChange} />
+                <Input type="select" name="gender" id="gendertb" value={this.state.gender} onChange={this.handleChange}>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </Input>
               </FormGroup>
             </Col>
             <Col md={6}>
               <FormGroup>
                 <Label for="Date of Birth">Date Of Birth</Label>
-                <Input type="Date" name="dob" id="bobtb" placeholder="Apartment, studio, or floor" onChange={this.handleChange} />
+                <Input type="text" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} />
               </FormGroup>
             </Col>
           </Row>
@@ -72,26 +78,22 @@ export default class SignUp extends React.Component {
             </Col>
             <Col md={4}>
               <FormGroup>
-                <Label for="exampleState">Occupation</Label>
-                <Input type="text" name="state" id="exampleState" onChange={this.handleChange} />
+                <Label for="occupationtb">Occupation</Label>
+                <Input type="text" name="occupation" id="occupationtb" onChange={this.handleChange} />
               </FormGroup>
             </Col>
             <Col md={4}>
               <FormGroup>
-                <Label for="poboxtb">PO Box</Label>
-                <Input type="text" name="pobox" id="poboxtb" onChange={this.handleChange} />
+                <Label for="poboxtb">dp</Label>
+                <Input type="text" name="dp" id="dptb" onChange={this.handleChange} />
               </FormGroup>  
             </Col>
           </Row>
           <FormGroup>
-          <Label for="filetb">File</Label>
-          <Input type="file" name="file" placeholder="images" id="filetb" onChange={this.handleChange} />
-          <FormText color="muted">
-            What image would you like for your profile?
-          </FormText>
-          <img className="img-circle img-responsive" src={this.state.file} alt="preview"/>
-        </FormGroup>
-          <Button>Sign in</Button>
+            <Label for="secret">Secret</Label>
+            <Input type="text" name="secret" onChange={this.handleChange} />
+          </FormGroup>
+          <Input type="submit" value="Sign up" className="btn btn-success" />
         </Form>
       </Container>
     );

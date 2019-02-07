@@ -1,15 +1,13 @@
 import React from 'react';
 import { Card, Button, CardImg, CardTitle, CardText, CardColumns,
  CardSubtitle, CardBody, Container } from 'reactstrap';
+import Api from '../api/api';
 
 export default class Feed extends React.Component{
     constructor(props){
         super(props);
         this.state= {
-            voterFeed:[{"id": "1", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"},
-            {"id": "2", "name":"Do you like to eat?", "candidates":"Sam", "deadline":"12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"},
-            {"id": "3", "name":"Do you like to eat?", "candidates":"Sam", "deadline": "12:00pm", "img":"https://upload.wikimedia.org/wikipedia/en/4/42/Kenyatta_University_Logo.png"} 
-        ]
+            Elections: []
          };
          this.loggedIn = {
              logged: false,
@@ -17,15 +15,23 @@ export default class Feed extends React.Component{
              email: ''
          }
     }
+    componentDidMount(){
+        Api.get('org.bitpoll.net.Election').then(res => {
+            const Elections = res.data;
+            this.setState({ Elections });
+        }).catch(error => {
+            console.log('error',  error.response);
+        });
+    }
     render(){
-        let feeds = this.state.voterFeed;
+        let feeds = this.state.Elections;
         let feedlist = feeds.map((feed)=> 
-        <Card key={feed.id}>
+        <Card key={feed.electionId} className="shadow">
             <CardImg top width="100%" src={feed.img} alt="Card image cap" />
             <CardBody>
-                <CardTitle>{feed.name}</CardTitle>
-                <CardSubtitle>{feed.candidates}</CardSubtitle>
-                <CardText>{feed.deadline}</CardText>
+                <CardTitle>{feed.motion}</CardTitle>
+                <CardSubtitle>Valid voters: {feed.ballotKey.length}</CardSubtitle>
+                <CardText>{feed.institution}</CardText>
                 <Button>Button</Button>
             </CardBody>
         </Card>
@@ -34,25 +40,6 @@ export default class Feed extends React.Component{
             <Container md={8}>
               <CardColumns>
               {feedlist}
-              <Card body inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
-                  <CardTitle>Special Title Treatment</CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button>Button</Button>
-              </Card>
-              <Card>
-                  <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
-                  <CardBody>
-                  <CardTitle>Card title</CardTitle>
-                  <CardSubtitle>Card subtitle</CardSubtitle>
-                  <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</CardText>
-                  <Button>Button</Button>
-                  </CardBody>
-              </Card>
-              <Card body inverse color="primary">
-                  <CardTitle>Special Title Treatment</CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button color="secondary">Button</Button>
-              </Card>
               </CardColumns>
           </Container>
         );

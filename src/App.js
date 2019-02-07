@@ -11,6 +11,7 @@ import Profile from './components/profile';
 import Api from './api/api'
 import newElection from './components/newElection';
 import Dashboard from './components/dashboard';
+import newInstitution from './components/newInstitution';
 
 
 class App extends Component {
@@ -26,7 +27,7 @@ class App extends Component {
     }
   }
    componentDidMount(){
-    Api.get('api/org.bitpoll.net.Voter').then(res =>{
+    Api.get('org.bitpoll.net.Voter').then(res =>{
       const Voter = res.data;
       this.setState({ Voter });
     });
@@ -46,6 +47,7 @@ class App extends Component {
             <Route path="/SignIn" component={SignIn} />
             <Route path="/Dashboard" component={Dashboard} />
             <Route path="/SignIn" component={SignIn} />
+            <Route path="/newInstitution" component={newInstitution} />
             <Route path="/newElection" component={newElection} />
             <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/Feed/:id"  render={(props)=><ElectionCard {...props} comments={this.state.comments}/>} />

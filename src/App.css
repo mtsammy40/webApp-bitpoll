@@ -57,12 +57,12 @@
   z-index: 1;
   top: 20;
   left: 0;
-  background-color: #005269;
+  background-color: #d8d9da;
   overflow-x: hidden;
   padding-top: 20px;
 }
 .sidebar a{
-  color: rgb(49, 49, 49);
+  color: rgb(218, 0, 218);
   width: 100%;
   display: block;
   background-color: #ebebeb;
@@ -73,6 +73,7 @@
   background-color: #00c2f8;
   color: white;
   text-decoration: none;
+  padding: 15px;
 }
 .content-wrapper{
  margin-left: 200px;
