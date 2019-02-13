@@ -10,32 +10,39 @@ export default class newElection extends React.Component{
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
     }
     handleChange(e){
         if(e.target.name=== "img"){
             this.setState({[e.target.name] : URL.createObjectURL(e.target.files[0])});
             console.log('img' + this.state.img);
-          } else if(e.target.name === "cand_name"){
-            const candidateNames = [];
-            candidateNames.push(e.target.value);  
-            this.setState({candidateNames});
-          } else {
+          }  else {
             this.setState({[e.target.name] : e.target.value});
           }
     }
-    handleSubmit(e){
-
-        e.preventDefault();
+    handleBlur(e){
+        // want a multidimensional array? https://itnext.io/building-a-dynamic-controlled-form-in-react-together-794a44ee552c
         var candidateNames = [];
         for(var i=1; i<=this.state.cand_no; i++){
             var name = document.getElementById("cand_name_"+i).value;
             candidateNames.push(name);
         }
-        console.log('Namessss', candidateNames)
-        this.setState({candidateNames});
+        this.setState({ candidateNames });
+    }
+    handleSubmit(e){
+
+        e.preventDefault();
+        /* var candidateNames = [];
+        for(var i=1; i<=this.state.cand_no; i++){
+            var name = document.getElementById("cand_name_"+i).value;
+            candidateNames.push(name);
+        }
+        console.log('Namessss', candidateNames);
+        this.setState({ candidateNames });
+        console.log('Namessss2', this.state); */
         delete this.state.cand_no;
         Api.post('org.bitpoll.net.CreateElection', this.state).then(res => {
-            alert('successful'+ res.data.name);
+            alert('successfully set: '+ res.data.motion);
         }).catch(error=> {
             alert(error.response.code + 'Please recheck your data and retry');
         });
@@ -51,19 +58,18 @@ export default class newElection extends React.Component{
             const ListItem = tb.map( (t) =>  
             <FormGroup key={t.toString()} >
                 <Label>Candidate {t} </Label>
-                <Input type="text" name="cand_name" id={'cand_name_'+t} placeholder="Candidate Name"  />
+                <Input type="text" name="cand_name" id={'cand_name_'+t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} />
             </FormGroup>
             );
         return(
             <Container>
                 <form onSubmit={this.handleSubmit} >
-                
                     <FormGroup>
                         <Label for="motiontb">Motion</Label>
                         <Input type="text" placeholder="Input motion" name="motion" id="motiontb" onChange={this.handleChange} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="desctb">Description</Label>
+                        <Label for="desctb">Institution</Label>
                         <textarea className="form-control" name="institution" value="org.bitpoll.net.Institution#ku.ac.ke" onChange={this.handleChange} ></textarea>
                     </FormGroup>
                     <Row form>
@@ -94,7 +100,6 @@ export default class newElection extends React.Component{
                             </FormGroup>
                         </Col>
                     </Row>
-                    
                         {ListItem}
                     <Input type="submit" value="Create Election" className="btn btn-success" />
                 </form>

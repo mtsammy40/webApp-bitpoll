@@ -61,7 +61,7 @@ export default class Navigation extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                  <NavLink href="/Profile/">My Profile</NavLink>
+                  <NavLink href="/Profile">My Profile</NavLink>
                   </DropdownItem>
                   <DropdownItem>
                     Log Out

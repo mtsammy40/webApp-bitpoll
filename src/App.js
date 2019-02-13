@@ -18,6 +18,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      elections: [],
       comments:[
         {"id": "1", "comment": "This is a good election"}
       ],
@@ -31,6 +32,10 @@ class App extends Component {
       const Voter = res.data;
       this.setState({ Voter });
     });
+    Api.get('org.bitpoll.net.Election').then(res=>{
+      const elections = res.data;
+      this.setState({elections});
+    })
    }
 
   render() {
@@ -49,8 +54,8 @@ class App extends Component {
             <Route path="/SignIn" component={SignIn} />
             <Route path="/newInstitution" component={newInstitution} />
             <Route path="/newElection" component={newElection} />
-            <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
-            <Route path="/Feed/:id"  render={(props)=><ElectionCard {...props} comments={this.state.comments}/>} />
+            <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
+            <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>
         </div>
       </div>

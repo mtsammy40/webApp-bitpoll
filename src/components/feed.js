@@ -7,7 +7,7 @@ export default class Feed extends React.Component{
     constructor(props){
         super(props);
         this.state= {
-            Elections: []
+            elections: []
          };
          this.loggedIn = {
              logged: false,
@@ -17,14 +17,14 @@ export default class Feed extends React.Component{
     }
     componentDidMount(){
         Api.get('org.bitpoll.net.Election').then(res => {
-            const Elections = res.data;
-            this.setState({ Elections });
+            const elections = res.data;
+            this.setState({ elections });
         }).catch(error => {
             console.log('error',  error.response);
         });
     }
     render(){
-        let feeds = this.state.Elections;
+        let feeds = this.state.elections;
         let feedlist = feeds.map((feed)=> 
         <Card key={feed.electionId} className="shadow">
             <CardImg top width="100%" src={feed.img} alt="Card image cap" />
@@ -32,7 +32,7 @@ export default class Feed extends React.Component{
                 <CardTitle>{feed.motion}</CardTitle>
                 <CardSubtitle>Valid voters: {feed.ballotKey.length}</CardSubtitle>
                 <CardText>{feed.institution}</CardText>
-                <Button>Button</Button>
+                <Button href={"/vote/" + feed.electionId}>Go to election</Button>
             </CardBody>
         </Card>
         );
