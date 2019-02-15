@@ -12,6 +12,8 @@ import Api from './api/api'
 import newElection from './components/newElection';
 import Dashboard from './components/dashboard';
 import newInstitution from './components/newInstitution';
+import ResultsBar from './components/charts/electionChart';
+import Modaly from './components/modal';
 
 
 class App extends Component {
@@ -39,7 +41,6 @@ class App extends Component {
    }
 
   render() {
-    console.log(this.state.Voter)
     return (
       <Router>
       <div>
@@ -53,8 +54,10 @@ class App extends Component {
             <Route path="/Dashboard" component={Dashboard} />
             <Route path="/SignIn" component={SignIn} />
             <Route path="/newInstitution" component={newInstitution} />
+            <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
-            <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
+            <Route path="/modal/" component={Modaly} />
+            <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>
         </div>

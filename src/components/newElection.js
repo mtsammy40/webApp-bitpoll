@@ -41,6 +41,7 @@ export default class newElection extends React.Component{
         this.setState({ candidateNames });
         console.log('Namessss2', this.state); */
         delete this.state.cand_no;
+        console.log('state', this.state);
         Api.post('org.bitpoll.net.CreateElection', this.state).then(res => {
             alert('successfully set: '+ res.data.motion);
         }).catch(error=> {
@@ -70,7 +71,7 @@ export default class newElection extends React.Component{
                     </FormGroup>
                     <FormGroup>
                         <Label for="desctb">Institution</Label>
-                        <textarea className="form-control" name="institution" value="org.bitpoll.net.Institution#ku.ac.ke" onChange={this.handleChange} ></textarea>
+                        <textarea className="form-control" name="institution" onChange={this.handleChange} ></textarea>
                     </FormGroup>
                     <Row form>
                         <Col md={6}>
