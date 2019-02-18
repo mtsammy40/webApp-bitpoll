@@ -14,19 +14,19 @@ export default class Dashboard extends React.Component{
         };
     }
     componentDidMount(){
-        Api.get('org.bitpoll.net.Institution').then(res => {
+        Api.get('org.bitpoll.net.Institution', { withCredentials: true}).then(res => {
             const Institutions = res.data;
             this.setState({ Institutions });
         }).catch(error => {
             console.log('error' + error.response);
         });
-        Api.get('org.bitpoll.net.Voter').then(res => {
+        Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res => {
             const Voters = res.data;
             this.setState({ Voters });
         }).catch(error=> {
             console.log(error.response);
         });
-        Api.get('org.bitpoll.net.Election').then(res => {
+        Api.get('org.bitpoll.net.Election', { withCredentials: true}).then(res => {
             const Elections = res.data;
             this.setState({ Elections });
         }).catch(error=> {

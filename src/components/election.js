@@ -38,7 +38,7 @@ export default class ElectionCard extends React.Component{
             "ballotKey": e.target.ballotKey.value
         }
         console.log('vote', vote);
-        Api.post('org.bitpoll.net.Voting', vote).then((res)=>{
+        Api.post('org.bitpoll.net.Voting', vote, { withCredentials: true}).then((res)=>{
             if(res==="successful"){
                 alert('successfully voted!');
             } else {
@@ -46,13 +46,18 @@ export default class ElectionCard extends React.Component{
             }
             
         }).catch(e=>{
-            alert(e.response);
+            if(e  === null){
+                alert('Connection to server has been lost, please check that you are connected');
+            } else {
+                alert(e.response);
+            }
+           
         })
 
     }
     componentDidMount(){
         //var election = this.props.elections.find( e => e.electionId === this.props.match.params.id );
-        Api.get('org.bitpoll.net.Election/'+this.props.match.params.id).then(res => {
+        Api.get('org.bitpoll.net.Election/'+this.props.match.params.id, { withCredentials: true}).then(res => {
             const election = res.data;
             this.setState({ election });
         }).then(() => {
@@ -61,7 +66,7 @@ export default class ElectionCard extends React.Component{
             //console.log('res.data', this.state.election.candidates[0].split('#').pop());
             for(var i = 0; i<this.state.election.candidates.length; i++){
                 //get each candidates details
-                Api.get('org.bitpoll.net.Candidate/' + this.state.election.candidates[i].split('#').pop())
+                Api.get('org.bitpoll.net.Candidate/' + this.state.election.candidates[i].split('#').pop(), { withCredentials: true})
                 .then((cand)=>{
                     candidates.push(cand.data);
                     labels.push(cand.data.name);
@@ -85,7 +90,12 @@ export default class ElectionCard extends React.Component{
             this.setState({ chartData, chartOptions });
             console.log('chartData', this.state.chartData);
         }).catch(error => {
-            console.log('error',  error);
+            if(error === null){
+                alert('Connection to the server has been lost, please check that your internet is working');
+            } else {
+                console.log('error',  error);
+            }
+           
         });
         this.ws = new WebSocket('ws://localhost:3000/');
         this.ws.onopen = ()=>{

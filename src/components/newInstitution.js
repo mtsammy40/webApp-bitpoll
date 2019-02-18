@@ -19,10 +19,15 @@ export default class newInstitution extends React.Component{
     }
     handleSubmit(e){
         e.preventDefault();
-        api.post('org.bitpoll.net.Institution', this.state).then(res => {
+        api.post('org.bitpoll.net.Institution', this.state, { withCredentials: true}).then(res => {
             alert('successful');
         }).catch(error=> {
-            alert('Please recheck your data and retry');
+            if(error=== null){
+                alert('Connection to the server is lost, please check your internet connection');
+            } else {
+                alert('Please recheck your data and retry');
+            }
+           
         });
     }
     render(){

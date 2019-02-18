@@ -20,7 +20,7 @@ export default class SignUp extends React.Component {
   }
   handleSubmit(e){
     e.preventDefault();
-    Api.post('org.bitpoll.net.Voter', this.state).then(res => {
+    Api.post('org.bitpoll.net.Voter', this.state, { withCredentials: true}).then(res => {
         alert('successful');
     }).catch(error => {
         alert('Please recheck your data and retry');

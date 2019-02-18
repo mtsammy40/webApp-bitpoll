@@ -16,7 +16,7 @@ export default class Feed extends React.Component{
          }
     }
     componentDidMount(){
-        Api.get('org.bitpoll.net.Election').then(res => {
+        Api.get('org.bitpoll.net.Election', { withCredentials: true}).then(res => {
             const elections = res.data;
             this.setState({ elections });
         }).catch(error => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Container, Input, Label, FormGroup, Row, Col, FormText} from 'reactstrap';
 import Api from '../api/api';
+import { longStackSupport } from 'q';
 
 export default class newElection extends React.Component{
     constructor(props){
@@ -42,10 +43,15 @@ export default class newElection extends React.Component{
         console.log('Namessss2', this.state); */
         delete this.state.cand_no;
         console.log('state', this.state);
-        Api.post('org.bitpoll.net.CreateElection', this.state).then(res => {
+        Api.post('org.bitpoll.net.CreateElection', this.state, { withCredentials: true}).then(res => {
             alert('successfully set: '+ res.data.motion);
         }).catch(error=> {
-            alert(error.response.code + 'Please recheck your data and retry');
+            console.log('error', error)
+            if(error.response.code){
+                alert('connection lost, Please check your internet connection');
+            } else {
+                alert(error.response.code + 'Please recheck your data and retry');
+            } 
         });
     }
     render(){

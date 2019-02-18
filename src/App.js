@@ -30,13 +30,15 @@ class App extends Component {
     }
   }
    componentDidMount(){
-    Api.get('org.bitpoll.net.Voter').then(res =>{
+    Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res =>{
       const Voter = res.data;
       this.setState({ Voter });
     });
-    Api.get('org.bitpoll.net.Election').then(res=>{
+    Api.get('org.bitpoll.net.Election', {withCredentials: true}).then(res=>{
       const elections = res.data;
       this.setState({elections});
+    }).catch(error => { 
+      
     })
    }
 
