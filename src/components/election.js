@@ -157,7 +157,8 @@ export default class ElectionCard extends React.Component{
                             <form onSubmit={this.handleSubmit}>
                                 <FormGroup>
                                     <Label>Select your prefered candidate</Label>
-                                    <Input name="candidate" type="select">
+                                    <Input name="candidate" type="select" required>
+                                    <option  value="" > Please select candidate</option>
                                         {candOptions}
                                     </Input>
                                 </FormGroup>

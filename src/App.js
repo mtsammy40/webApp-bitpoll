@@ -14,6 +14,8 @@ import Dashboard from './components/dashboard';
 import newInstitution from './components/newInstitution';
 import ResultsBar from './components/charts/electionChart';
 import Modaly from './components/modal';
+import IDashboard from './components/InstitutionDashboard';
+import IDStats from './components/IDStats';
 
 
 class App extends Component {
@@ -24,9 +26,12 @@ class App extends Component {
       comments:[
         {"id": "1", "comment": "This is a good election"}
       ],
-      profile: {"id": "12", "name":"Samuel Mutemi", "Votes": "2", "Nationality":"Kenyan" },
       election: [],
-      Voter: []
+      profile: {
+        isLoggedIn: false,
+        details:[],
+        type: []
+      }
     }
   }
    componentDidMount(){
@@ -38,8 +43,11 @@ class App extends Component {
       const elections = res.data;
       this.setState({elections});
     }).catch(error => { 
-      
-    })
+      console.log('App.js Fetch election error', error);
+    });
+    Api.get('org.bitpoll.net.Institution', {withCredentials: true}).then(res=>{
+      this.setState({Institutions : res.data});
+    });
    }
 
   render() {
@@ -59,6 +67,8 @@ class App extends Component {
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
             <Route path="/modal/" component={Modaly} />
+            <Route path="/IDashboard/" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
+            <Route path="/IDashboard/Statistics" render={(props)=><IDStats {...props} profile={this.state.profile}/>} />
             <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>

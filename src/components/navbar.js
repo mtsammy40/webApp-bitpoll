@@ -53,6 +53,9 @@ export default class Navigation extends React.Component {
                 <NavLink href="/Dashboard/">Dashboard</NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/IDashboard/">Dashboard</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/chart/">Chart</NavLink>
               </NavItem>
               <NavItem>
