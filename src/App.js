@@ -15,7 +15,6 @@ import newInstitution from './components/newInstitution';
 import ResultsBar from './components/charts/electionChart';
 import Modaly from './components/modal';
 import IDashboard from './components/InstitutionDashboard';
-import IDStats from './components/IDStats';
 import VoterDash from './components/voterDash';
 
 
