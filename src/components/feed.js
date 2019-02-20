@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Button, CardImg, CardTitle, CardText, CardColumns,
- CardSubtitle, CardBody, Container } from 'reactstrap';
+ CardSubtitle, CardBody, CardFooter, Container, Badge, ListGroup, ListGroupItem } from 'reactstrap';
 import Api from '../api/api';
 
 export default class Feed extends React.Component{
@@ -26,14 +26,19 @@ export default class Feed extends React.Component{
     render(){
         let feeds = this.state.elections;
         let feedlist = feeds.map((feed)=> 
-        <Card key={feed.electionId} className="shadow">
+        <Card key={feed.electionId} className="shadow mt">
             <CardImg top width="100%" src={feed.img} alt="Card image cap" />
             <CardBody>
-                <CardTitle>{feed.motion}</CardTitle>
+                <CardTitle><h2>{feed.motion}</h2></CardTitle>
                 <CardSubtitle>Valid voters: {feed.ballotKey.length}</CardSubtitle>
-                <CardText>{feed.institution}</CardText>
-                <Button href={"/vote/" + feed.electionId}>Go to election</Button>
+                <CardText>
+                <ListGroup>
+        <ListGroupItem className="justify-content-between">Start Date: <Badge pill>{feed.start}</Badge></ListGroupItem>
+        <ListGroupItem className="justify-content-between">End Date: <Badge pill>{feed.end}</Badge></ListGroupItem>
+      </ListGroup></CardText>
+                <Button className="btn btn-primary" href={"/vote/" + feed.electionId}>Go to election</Button>
             </CardBody>
+            <CardFooter><Badge color="success">Ongoing</Badge></CardFooter>
         </Card>
         );
         return (

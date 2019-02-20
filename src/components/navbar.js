@@ -50,9 +50,6 @@ export default class Navigation extends React.Component {
                 <NavLink href="/newElection/">New Election</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/Dashboard/">Dashboard</NavLink>
-              </NavItem>
-              <NavItem>
                 <NavLink href="/IDashboard/">Dashboard</NavLink>
               </NavItem>
               <NavItem>
@@ -60,6 +57,9 @@ export default class Navigation extends React.Component {
               </NavItem>
               <NavItem>
                 <NavLink href="/modal/">modal</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/Voter/">VoterDash</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>

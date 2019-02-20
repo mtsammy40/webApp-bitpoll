@@ -16,6 +16,7 @@ import ResultsBar from './components/charts/electionChart';
 import Modaly from './components/modal';
 import IDashboard from './components/InstitutionDashboard';
 import IDStats from './components/IDStats';
+import VoterDash from './components/voterDash';
 
 
 class App extends Component {
@@ -29,28 +30,45 @@ class App extends Component {
       election: [],
       profile: {
         isLoggedIn: false,
-        details:[],
-        type: []
+        type: ""
       }
     }
+    this.handleLogin = this.handleLogin.bind(this);
   }
    componentDidMount(){
     Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res =>{
       const Voter = res.data;
       this.setState({ Voter });
+    }).catch(e=>{
+      console.log('Appjs fetch voter error',e);
     });
     Api.get('org.bitpoll.net.Election', {withCredentials: true}).then(res=>{
-      const elections = res.data;
-      this.setState({elections});
+      const election = res.data;
+      this.setState({election});
+      
     }).catch(error => { 
       console.log('App.js Fetch election error', error);
     });
     Api.get('org.bitpoll.net.Institution', {withCredentials: true}).then(res=>{
-      this.setState({Institutions : res.data});
+      const Institutions = res.data;
+      this.setState({Institutions});
+      console.log('mother data', this.state)
     });
    }
+   handleLogin(type, identity){
+    var profileData;
+    this.setState({type: type});
+    if(type==="voter"){
+      profileData = this.state.Voter.find(v => v.email === identity);
+      
+    } else if (type==="institution"){
+      profileData = this.state.Institution.find(i => i.email === identity);
+    } 
 
+    this.setState({profileData});
+   }
   render() {
+    console.log('mother state', this.state)
     return (
       <Router>
       <div>
@@ -60,15 +78,14 @@ class App extends Component {
             <Route path="/SignUp" component={Voter} />
             <Route exact path="/Feed" component={Feed} />
             <Route exact path="/" component={Home} />
-            <Route path="/SignIn" component={SignIn} />
+            <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} Voters={this.state.Voter} Institutions={this.state.Institutions} loginHandler={this.loginHandler} profile={this.state.profileData}/>}  />
             <Route path="/Dashboard" component={Dashboard} />
-            <Route path="/SignIn" component={SignIn} />
             <Route path="/newInstitution" component={newInstitution} />
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
             <Route path="/modal/" component={Modaly} />
             <Route path="/IDashboard/" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
-            <Route path="/IDashboard/Statistics" render={(props)=><IDStats {...props} profile={this.state.profile}/>} />
+            <Route path="/Voter" render={(props)=><VoterDash {...props} profile={this.state.profile}/>} />
             <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>

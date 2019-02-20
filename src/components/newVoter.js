@@ -65,14 +65,14 @@ export default class SignUp extends React.Component {
             <Col md={6}>
               <FormGroup>
                 <Label for="Date of Birth">Date Of Birth</Label>
-                <Input type="text" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} />
+                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} />
               </FormGroup>
             </Col>
           </Row>
           <Row form>
             <Col md={4}>
               <FormGroup>
-                <Label for="exampleCity">County</Label>
+                <Label for="countytb">County</Label>
                 <Input type="text" name="county" id="countytb" onChange={this.handleChange} />
               </FormGroup>
             </Col>

@@ -1,5 +1,10 @@
 import React from 'react';
 import {Row, Container, Col, Card, CardBody, CardImg, CardTitle, CardText, Table} from 'reactstrap';
+import {
+    BrowserRouter as Router,
+    Link,
+    Route // for later
+  } from 'react-router-dom';
 import Api from '../api/api';
 import '../App.css';
 import Dp from '../Images/man.svg';
@@ -86,7 +91,7 @@ export default class IDashboard extends React.Component{
         }
         const MyElections = ()=>{
             if(!this.state.Elections){
-                return <tr><td>Loading Elections...</td></tr>
+                return <tr><td>No elections created</td></tr>
             } else {
                 var electionslist = this.state.Elections.map(e =>       
                     <tr key={e.electionId}><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><button className="btn btn-secondary">View Candidates</button></td><td><button className="btn btn-danger">Remove</button></td></tr>
@@ -163,6 +168,100 @@ export default class IDashboard extends React.Component{
                     </Row>
             }
         }
+        const DashHome = ()=>{
+            return  <Container>
+            <Row className="d-flex flex-row">
+                <Col md={3}>
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h4>Voters</h4>
+                                <span>{this.state.Voters.length}</span>
+                            </CardTitle>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col md={3}>
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h4>Elections</h4>
+                                <span>{this.state.Elections.length}</span>
+                            </CardTitle>
+                        </CardBody>
+                    </Card>
+                </Col>
+
+                <Col md={3}>
+                <Card className="shadow mt">
+                    <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <span><h4>Institutions</h4></span>
+                                <span className="pull-right ">{this.state.Institutions.length}</span>
+                            </CardTitle>
+                            
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{size: 9}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>Institution Details</h2>
+                            </CardTitle>
+                            <InfoCard></InfoCard>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{size: 9}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>My Voters</h2>
+                            </CardTitle>
+                                <MyVoters></MyVoters>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{size: 12}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>My Elections</h2>
+                            </CardTitle>
+                                <MyElections></MyElections>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{size: 12}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>Voters By gender</h2>
+                            </CardTitle>
+                                <MyVotersChart></MyVotersChart>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            
+        </Container>
+        }
 
     
 
@@ -174,103 +273,57 @@ export default class IDashboard extends React.Component{
                     </div>
                     <div className="sidelinks">
                         <a href={`${this.props.match.url}/home/`}>Home</a>
-                        <a href={`${this.props.match.url}/Voters/`}>Statistics</a>
-                        <a href={`${this.props.match.url}/Elections/`}>Party</a>
+                        <a href={`${this.props.match.url}/Voters/`}>Voters</a>
+                        <a href={`${this.props.match.url}/Elections/`}>Elections</a>
                     </div>
                 </div>
                 <div className="content-wrapper">
-                    <Container>
-                        <Row className="d-flex flex-row">
-                            <Col md={3}>
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h4>Voters</h4>
-                                            <span>{this.state.Voters.length}</span>
-                                        </CardTitle>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col md={3}>
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h4>Elections</h4>
-                                            <span>{this.state.Elections.length}</span>
-                                        </CardTitle>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-
-                            <Col md={3}>
-                            <Card className="shadow mt">
-                                <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <span><h4>Institutions</h4></span>
-                                            <span className="pull-right ">{this.state.Institutions.length}</span>
-                                        </CardTitle>
-                                        
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={{size: 9}} >
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h2>Institution Details</h2>
-                                        </CardTitle>
-                                        <InfoCard></InfoCard>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={{size: 9}} >
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h2>My Voters</h2>
-                                        </CardTitle>
-                                            <MyVoters></MyVoters>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={{size: 12}} >
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h2>My Elections</h2>
-                                        </CardTitle>
-                                            <MyElections></MyElections>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={{size: 12}} >
-                                <Card className="shadow mt">
-                                    <CardImg></CardImg>
-                                    <CardBody>
-                                        <CardTitle>
-                                            <h2>Voters By gender</h2>
-                                        </CardTitle>
-                                            <MyVotersChart></MyVotersChart>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                        
-                    </Container>
+                <Route path={`${this.props.match.url}/home`} component={DashHome}/>
+                <Route path={`${this.props.match.url}/Voters`}render={
+                    (props)=><Container><Row>
+                    <Col md={{size: 12}} >
+                        <Card className="shadow mt">
+                            <CardImg></CardImg>
+                            <CardBody>
+                                <CardTitle>
+                                    <h2>Voters By gender</h2>
+                                </CardTitle>
+                                    <MyVoters></MyVoters>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                <Col md={{size: 12}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>Voters By gender</h2>
+                            </CardTitle>
+                                <MyVotersChart></MyVotersChart>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            </Container>
+            }/>
+                <Route path={`${this.props.match.url}/Elections`} render={
+                    (props)=><Container {...props} elections={this.state.elections}>
+                     <Row>
+                <Col md={{size: 12}} >
+                    <Card className="shadow mt">
+                        <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <h2>Voters By gender</h2>
+                            </CardTitle>
+                                <MyElections></MyElections>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row></Container>}/>
+                
                 </div>
             </div>
             
