@@ -1,8 +1,7 @@
 import React from 'react';
-import {Container, Input, Label, FormGroup, Row, Col, FormText} from 'reactstrap';
+import {Container, Input, Label, FormGroup, Row, Col} from 'reactstrap';
 import Api from '../api/api';
-import { longStackSupport } from 'q';
-
+import Moment from 'moment';
 export default class newElection extends React.Component{
     constructor(props){
         super(props);
@@ -65,31 +64,32 @@ export default class newElection extends React.Component{
             const ListItem = tb.map( (t) =>  
             <FormGroup key={t.toString()} >
                 <Label>Candidate {t} </Label>
-                <Input type="text" name="cand_name" id={'cand_name_'+t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} />
+                <Input type="text" name="cand_name" id={'cand_name_'+t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} required/>
             </FormGroup>
             );
+            const minDate = new Date(Date.now());
         return(
             <Container>
                 <form onSubmit={this.handleSubmit} >
                     <FormGroup>
                         <Label for="motiontb">Motion</Label>
-                        <Input type="text" placeholder="Input motion" name="motion" id="motiontb" onChange={this.handleChange} />
+                        <Input type="text" placeholder="Input motion" name="motion" id="motiontb" onChange={this.handleChange} required/>
                     </FormGroup>
                     <FormGroup>
                         <Label for="desctb">Institution</Label>
-                        <textarea className="form-control" name="institution" onChange={this.handleChange} ></textarea>
+                        <Input type="text" className="form-control" name="admin" onChange={this.handleChange} required/>
                     </FormGroup>
                     <Row form>
                         <Col md={6}>
                             <FormGroup>
                                 <Label for="starttb">Start Date</Label>
-                                <Input type="date" placeholder="The start date of the election" name="start" id="starttb" onChange={this.handleChange} />
+                                <Input type="date" placeholder="The start date of the election" name="start" id="starttb" min={Moment().format('YYYY-MM-DD')}  onChange={this.handleChange} required/>
                             </FormGroup>
                         </Col>
                         <Col md={6}>
                             <FormGroup>
                                 <Label for="endb">End Date</Label>
-                                <Input type="date" placeholder="The end date of the election" name="end" id="endtb" onChange={this.handleChange} />
+                                <Input type="date" placeholder="The end date of the election" name="end" id="endtb" min={this.state.start} onChange={this.handleChange} required/>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -97,13 +97,13 @@ export default class newElection extends React.Component{
                         <Col md={3}>
                         <FormGroup>
                             <Label id="cand_notb">No. of Candidates</Label>
-                            <Input type="number" name="cand_no" id="cand_notb" placeholder="No. of Candidates" onChange={this.handleChange} />
+                            <Input type="number" name="cand_no" id="cand_notb" min={2} placeholder="No. of Candidates" onChange={this.handleChange} required />
                         </FormGroup>
                         </Col>
                         <Col md={3}>
                             <FormGroup>
                                 <Label>Number of Ballots</Label>
-                                <Input type="number" name="ballotNo" placeholder="No. of Ballots" onChange={this.handleChange} />
+                                <Input type="number" name="ballotNo" placeholder="No. of Ballots" min={3} onChange={this.handleChange} required />
                             </FormGroup>
                         </Col>
                     </Row>

@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
-import Voter from './components/newVoter';
+import Voter from './components/newAdmin';
 import Feed from './components/feed';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navigation from './components/navbar';
-import Home from './components/home';
 import SignIn from './components/SignIn';
 import ElectionCard from './components/election';
 import Profile from './components/profile';
 import Api from './api/api'
 import newElection from './components/newElection';
 import Dashboard from './components/dashboard';
-import newInstitution from './components/newInstitution';
+import newAdmin from './components/newAdmin';
 import ResultsBar from './components/charts/electionChart';
 import Modaly from './components/modal';
-import IDashboard from './components/InstitutionDashboard';
-import VoterDash from './components/voterDash';
+import IDashboard from './components/adminDash';
+import Header from './components/Jumbotron';
 
 
 class App extends Component {
@@ -35,7 +34,7 @@ class App extends Component {
     this.handleLogin = this.handleLogin.bind(this);
   }
    componentDidMount(){
-    Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res =>{
+    Api.get('org.bitpoll.net.Admin', { withCredentials: true}).then(res =>{
       const Voter = res.data;
       this.setState({ Voter });
     }).catch(e=>{
@@ -44,14 +43,8 @@ class App extends Component {
     Api.get('org.bitpoll.net.Election', {withCredentials: true}).then(res=>{
       const election = res.data;
       this.setState({election});
-      
     }).catch(error => { 
       console.log('App.js Fetch election error', error);
-    });
-    Api.get('org.bitpoll.net.Institution', {withCredentials: true}).then(res=>{
-      const Institutions = res.data;
-      this.setState({Institutions});
-      console.log('mother data', this.state)
     });
    }
    handleLogin(type, identity){
@@ -76,15 +69,14 @@ class App extends Component {
           <Switch>
             <Route path="/SignUp" component={Voter} />
             <Route exact path="/Feed" component={Feed} />
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" component={Header} />
             <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} Voters={this.state.Voter} Institutions={this.state.Institutions} loginHandler={this.loginHandler} profile={this.state.profileData}/>}  />
             <Route path="/Dashboard" component={Dashboard} />
-            <Route path="/newInstitution" component={newInstitution} />
+            <Route path="/newInstitution" component={newAdmin} />
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
             <Route path="/modal/" component={Modaly} />
             <Route path="/IDashboard/" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
-            <Route path="/Voter" render={(props)=><VoterDash {...props} profile={this.state.profile}/>} />
             <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>
