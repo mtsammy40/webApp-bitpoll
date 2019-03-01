@@ -13,10 +13,8 @@ import Load from '../Images/load.gif';
 import {Pie} from 'react-chartjs-2';
 import UpdateForm from './update';
 import NewReg from './newReg';
-import NewAdmin from './newAdmin';
-import NewElection from './newElection';
 
-export default class IDashboard extends React.Component{
+export default class RegDash extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -30,10 +28,6 @@ export default class IDashboard extends React.Component{
             UpdateProfile: {}
         };
         this.profile = {};
-        this.fetchAdmins = this.fetchAdmins.bind(this);
-        this.fetchRegs = this.fetchRegs.bind(this);
-        this.fetchCountries = this.fetchCountries.bind(this);
-        this.fetchElecs = this.fetchElecs.bind(this);
         this.getCandidates = this.getCandidates.bind(this);
         this.toggle = this.toggle.bind(this);
         this.toggleUpdateProfile = this.toggleUpdateProfile.bind(this);
@@ -49,19 +43,19 @@ export default class IDashboard extends React.Component{
             UpdateProfileModal: !prevState.UpdateProfileModal
           }));
       }
-    fetchAdmins = ()=>{
+    
+
+    componentWillMount(){
         Api.get('org.bitpoll.net.Admin', { withCredentials: true}).then(res => {
-        const Admins = res.data;
-        this.setState({ Admins });
-        console.log('Admins', this.state.Admins);
-        let UpdateProfile = this.state.Admins[0];
-        this.setState({ UpdateProfile });
-        console.log('update profile ', this.profile);
-    }).catch(error=> {
-        console.log(error.response);
-    });
-    }
-    fetchRegs(){
+            const Admins = res.data;
+            this.setState({ Admins });
+            console.log('Admins', this.state.Admins);
+            let UpdateProfile = this.state.Admins[0];
+            this.setState({ UpdateProfile });
+            console.log('update profile ', this.profile);
+        }).catch(error=> {
+            console.log(error.response);
+        });
         Api.get('org.bitpoll.net.Regulator', { withCredentials: true}).then(res => {
             const Regs = res.data;
             this.setState({ Regs });
@@ -69,8 +63,6 @@ export default class IDashboard extends React.Component{
         }).catch(error=> {
             console.log(error.response);
         });
-    }
-    fetchElecs(){
         Api.get('org.bitpoll.net.Election', { withCredentials: true}).then(res => {
             const Elections = res.data;
             this.setState({ Elections });
@@ -81,64 +73,33 @@ export default class IDashboard extends React.Component{
             console.log(error.response);
         });
     }
-    fetchCountries(){
-        Api.get('https://restcountries.eu/rest/v2/all?fields=name',{withCredentials: true}).then(res => {
-            var countries = res.data;
-            console.log('countries', countries);
-            this.setState({ countries });
-        }).catch(e=>{
-            console.log('e', e.responseText);     
-        });
-    }
-    
-    componentWillMount(){
-        this.fetchAdmins();
-        this.fetchRegs();
-        this.fetchElecs();
-        this.fetchCountries();
-    }
     
     getCandidates(){
-        let chartData = [];
-        for(var j = 0; j<this.state.Elections.length; j++){
-            var candidates; const labels=[]; const data=[]; const backgroundColors=[]; var f = 0;
-            for(var i=0; i<this.state.Elections[j].candidates.length; i++){
-                Api.get('org.bitpoll.net.Candidate#'+ this.state.Elections[0].candidates[i].split('#').pop(), {withCredentials: true})
-                // eslint-disable-next-line no-loop-func
-                .then((cand)=>{
-                    candidates= cand.data;
-                    labels.push(cand.data[f].name);
-                    data.push(cand.data[f].count);//for chart
-                    this.setState({ candidates });
-                    var dynamicColors = "rgb(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + ")";
-                    backgroundColors.push(dynamicColors);
-                    console.log('tumefika hapa', candidates);
-                    f++;
-                }).catch(e=>{
-                    console.log('cand fetch error', e);
-                });  
-                
-            }
-            var Cdata ={
-                "labels": labels,
-                "datasets": [{
-                    "label": this.state.Elections[j].motion,
-                    "data" : data,
-                    "backgroundColor": backgroundColors
-                }]                
-            };
-            chartData.push(Cdata); 
-            
+        var candidates; const labels=[]; const data=[]; const backgroundColors=[]; var f = 0;
+        for(var i=0; i<this.state.Elections[0].candidates.length; i++){
+            Api.get('org.bitpoll.net.Candidate#'+ this.state.Elections[0].candidates[i].split('#').pop(), {withCredentials: true})
+            // eslint-disable-next-line no-loop-func
+            .then((cand)=>{
+                candidates= cand.data;
+                labels.push(cand.data[f].name);
+                data.push(cand.data[f].count);//for chart
+                this.setState({ candidates });
+                var dynamicColors = "rgb(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + ")";
+                backgroundColors.push(dynamicColors);
+                console.log('tumefika hapa', candidates);
+                f++;
+            }).catch(e=>{
+                console.log('cand fetch error', e);
+            });   
         }
-        
-        /* var chartData = {
+        var chartData = {
             "labels": labels,
             "datasets": [{
                 "label": this.state.Elections[0].motion,
                 "data" : data,
                 "backgroundColor": backgroundColors
             }]                
-        }; */
+        };
         var chartOptions = {
                 "backgroundColor": "#ff4455" 
         }
@@ -147,7 +108,6 @@ export default class IDashboard extends React.Component{
         return this.state.candidates;
     }
     render(){
-        
         let institList = this.state.Admins.map(Admin => <CardText key={Admin.Id}>{Admin.name}</CardText>)
         let myDetails = this.state.Admins;
         let countriesList = [];
@@ -184,7 +144,7 @@ export default class IDashboard extends React.Component{
                 return <tr><td>Loading Admins...</td></tr>
             } else {
                 var Adminslist = this.state.Admins.map(v =>       
-                    <tr key={v.email}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td><button className="btn btn-danger">Remove</button></td></tr>
+                    <tr key={v.email}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td></tr>
                 );
                 return <Table>
                     <th>Email</th>
@@ -200,17 +160,15 @@ export default class IDashboard extends React.Component{
             if(!this.state.Regs){
                 return <img src={Load} alt="Loading Regulators"></img>
             } else {
-                var Regslist = this.state.Regs.map(R =>       
-                    <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary">Edit</button></td><td><button className="btn btn-danger">Remove</button></td></tr>
+                var Adminslist = this.state.Regs.map(R =>       
+                    <tr key={R.id}><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td></tr>
                 );
                 return <Table>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Address</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
-                    <tbody>{Regslist}</tbody>
+                    <tbody>{Adminslist}</tbody>
                     </Table>;
             }
         }
@@ -224,23 +182,26 @@ export default class IDashboard extends React.Component{
         const ActiveElections = () => {
             if(this.state.chartData){
                 console.log('chartData', this.state.chartData);
-                const AE = this.state.chartData.map((c, i) => <Container key={i}>
-                <Row>
-                    <Col md={8}>
-                        <Pie data={c} options={this.state.chartOptions}></Pie> 
-                    </Col>
-                    <Col md={4}>
-                        <Table>
-                            <tr><td>Motion: </td><td>{c.datasets[0].label}</td></tr>
-                            <tr><td>Candidates: </td><td>{c.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
-                        </Table>
-                    </Col>
-                </Row> 
-            </Container>);
-            return AE;   
+                const AE = 
+                <Container>
+                    <Row>
+                        <Col md={8}>
+                            <Pie data={this.state.chartData} options={this.state.chartOptions}></Pie> 
+                        </Col>
+                        <Col md={4}>
+                            <Table>
+                                <tr><td>Motion: </td><td>{this.state.chartData.datasets[0].label}</td></tr>
+                                <tr><td>Candidates: </td><td>{this.state.chartData.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
+                            </Table>
+                        </Col>
+                    </Row>
+                   
+                </Container> 
+                return AE;
+                
             } else {
-            return <p>No active elections to show</p>  
-            }
+                return <p>No active elections to show</p>
+            } 
         }
         const ViewCandidates = () =>{
             let candidates = this.state.candidates.map(e=><Card className="shadow mt">
@@ -422,19 +383,6 @@ export default class IDashboard extends React.Component{
                 </Col>
             </Row>
             <Row>
-                <Col md={{size: 9}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                            <CardTitle>
-                                <h2>My Regulators</h2>
-                            </CardTitle>
-                                <MyRegs></MyRegs>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-            <Row>
                 <Col md={{size: 12}} >
                     <Card className="shadow mt">
                         <CardImg></CardImg>
@@ -474,36 +422,11 @@ export default class IDashboard extends React.Component{
                         <a href={`${this.props.match.url}`}>Home</a>
                         <a href={`${this.props.match.url}/Admins`}>Admins</a>
                         <a href={`${this.props.match.url}/Elections`}>Elections</a>
-                        <a href={`${this.props.match.url}/newRegulator`}>New Regulator</a>
                     </div>
                 </div>
                 <div className="content-wrapper">
                 <Route exact path={`${this.props.match.url}`} component={DashHome}/>
-                <Route exact path={`${this.props.match.url}/newRegulator`} render={(props)=>
-                <Container>
-                    <Row>
-                        <Col md={12}>
-                            <Card className="shadow mt">
-                                <CardBody>
-                                    <CardTitle>
-                                        <h2>My Regulators</h2>
-                                    </CardTitle>
-                                    <MyRegs></MyRegs>
-                                    
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={12}>
-                            <Card className="shadow mt">
-                                <CardBody>
-                                    <NewReg></NewReg>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container>}/>
+                <Route exact path={`${this.props.match.url}/myRegulators`} component={MyRegs}/>
                 <Route path={`${this.props.match.url}/Admins`}render={
                     (props)=><Container><Row>
                     <Col md={{size: 12}} >
@@ -531,16 +454,6 @@ export default class IDashboard extends React.Component{
                     </Card>
                 </Col>
             </Row>
-            <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                          <NewAdmin></NewAdmin>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
             </Container>
             }/>
                 <Route path={`${this.props.match.url}/Elections`} render={
@@ -557,19 +470,6 @@ export default class IDashboard extends React.Component{
                         </CardBody>
                     </Card>
                 </Col>
-            </Row>
-            <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                            <CardTitle>
-                                <h2>New Elections</h2>
-                            </CardTitle>
-                                <NewElection admin={this.state.Admins[0].id}></NewElection>
-                        </CardBody>
-                    </Card>
-                </Col>
             </Row></Container>}/>
             <Route path={`${this.props.match.url}/UpdateProfile`} render={
                     (props)=>
@@ -577,6 +477,7 @@ export default class IDashboard extends React.Component{
                         <Row>
                             <Col md={12}>
                                 <Card className="mt shadow">
+                               
                                 <CardBody>
                                 <CardTitle><h2>Update Information</h2></CardTitle>
                                 <Upform {...props} profile={this.state.Admins[0]}></Upform>

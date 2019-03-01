@@ -2,11 +2,12 @@ import React from 'react';
 import {Container, Input, Label, FormGroup, Row, Col} from 'reactstrap';
 import Api from '../api/api';
 import Moment from 'moment';
-export default class newElection extends React.Component{
+export default class NewElection extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            candidateNames:[]
+            candidateNames:[],
+            admin: "org.bitpoll.net.Admin#"+this.props.admin,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -83,7 +84,7 @@ export default class newElection extends React.Component{
                         <Col md={6}>
                             <FormGroup>
                                 <Label for="starttb">Start Date</Label>
-                                <Input type="date" placeholder="The start date of the election" name="start" id="starttb" min={Moment().format('YYYY-MM-DD')}  onChange={this.handleChange} required/>
+                                <Input type="datetime-local" placeholder="The start date of the election" name="start" id="starttb" min={Moment().format('YYYY-MM-DD')}  onChange={this.handleChange} required/>
                             </FormGroup>
                         </Col>
                         <Col md={6}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
 import Api from '../api/api';
-export default class SignUp extends React.Component {
+export default class NewAdmin extends React.Component {
   constructor(props){
     super(props);
     this.state =  {
@@ -118,31 +118,19 @@ export default class SignUp extends React.Component {
             </Col>
             <Col md={4}>
               <FormGroup>
-                <Label for="occupationtb">Occupation</Label>
-                <Input type="text" name="occupation" id="occupationtb" onChange={this.handleChange} />
-              </FormGroup>
-            </Col>
-            <Col md={4}>
-              <FormGroup>
                 <Label for="poboxtb">National ID Number</Label>
                 <Input type="text" name="id" id="idtb" onChange={this.handleChange} />
               </FormGroup>  
             </Col>
           </Row>
           <Row>
-            <Col md={4}>
-              <FormGroup>
-                <Label for="secret">Password</Label>
-                <Input type="password" name="secret" onChange={this.handleChange} />
-              </FormGroup>
-            </Col>
-            <Col md={4}>
+            <Col md={6}>
             <FormGroup>
                 <Label for="dp">Dp</Label>
                 <Input type="text" name="dp" onChange={this.handleChange} />
               </FormGroup>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
             <FormGroup>
                 <Label for="dp">Phone Number</Label>
                 <Input type="text" name="phoneNo" onChange={this.handleChange} />

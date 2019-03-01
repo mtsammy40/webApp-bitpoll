@@ -15,6 +15,8 @@ import ResultsBar from './components/charts/electionChart';
 import Modaly from './components/modal';
 import IDashboard from './components/adminDash';
 import Header from './components/Jumbotron';
+import RegDash from './components/regDash';
+import DumbFeed from './components/dumbFeed';
 
 
 class App extends Component {
@@ -69,15 +71,16 @@ class App extends Component {
           <Switch>
             <Route path="/SignUp" component={Voter} />
             <Route exact path="/Feed" component={Feed} />
-            <Route exact path="/" component={Header} />
+            <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>
             <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} Voters={this.state.Voter} Institutions={this.state.Institutions} loginHandler={this.loginHandler} profile={this.state.profileData}/>}  />
             <Route path="/Dashboard" component={Dashboard} />
-            <Route path="/newInstitution" component={newAdmin} />
+            <Route path="/newAdmin" component={newAdmin} />
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
             <Route path="/modal/" component={Modaly} />
-            <Route path="/IDashboard/" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
-            <Route path="/Profile/" render={(props)=><Profile {...props} profile={this.state.profile} />} />
+            <Route path="/IDashboard" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
+            <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} profile={this.state.profile}/>} />
+            <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>
         </div>
