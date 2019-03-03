@@ -151,6 +151,12 @@ export default class IDashboard extends React.Component{
         let institList = this.state.Admins.map(Admin => <CardText key={Admin.Id}>{Admin.name}</CardText>)
         let myDetails = this.state.Admins;
         let countriesList = [];
+        let myAdmin = {'id': 'default'};
+        if(!this.state.Admins){
+            myAdmin={'id': 'default'};
+        } else {
+            myAdmin = this.state.Admins[0];
+        }
         if(!this.state.countries){
             countriesList=["Kenya"];
           } else {
@@ -233,6 +239,7 @@ export default class IDashboard extends React.Component{
                         <Table>
                             <tr><td>Motion: </td><td>{c.datasets[0].label}</td></tr>
                             <tr><td>Candidates: </td><td>{c.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
+                            <tr><td>Total Votes: </td><td>{c.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
                         </Table>
                     </Col>
                 </Row> 
@@ -566,7 +573,7 @@ export default class IDashboard extends React.Component{
                             <CardTitle>
                                 <h2>New Elections</h2>
                             </CardTitle>
-                                <NewElection admin={this.state.Admins[0].id}></NewElection>
+                                <NewElection admin={myAdmin}></NewElection>
                         </CardBody>
                     </Card>
                 </Col>

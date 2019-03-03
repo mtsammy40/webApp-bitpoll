@@ -41,12 +41,6 @@ export default class Navigation extends React.Component {
                 <NavLink href="/Feed/">Feed</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/Feed/1">Election</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/newElection/">New Election</NavLink>
-              </NavItem>
-              <NavItem>
                 <NavLink href="/IDashboard/">Dashboard</NavLink>
               </NavItem>
               <NavItem>

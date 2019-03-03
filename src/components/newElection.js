@@ -7,7 +7,7 @@ export default class NewElection extends React.Component{
         super(props);
         this.state = {
             candidateNames:[],
-            admin: "org.bitpoll.net.Admin#"+this.props.admin,
+            admin:'org.bitpoll.net.Admin#33699199',
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,7 +54,7 @@ export default class NewElection extends React.Component{
             } 
         });
     }
-    render(){
+    render(){ 
             var tb = [];
             for (var i = 1; i<=this.state.cand_no; i++){   
                 tb.push(i);
@@ -77,14 +77,14 @@ export default class NewElection extends React.Component{
                         <Input type="text" placeholder="Input motion" name="motion" id="motiontb" onChange={this.handleChange} required/>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="desctb">Institution</Label>
-                        <Input type="text" className="form-control" name="admin" onChange={this.handleChange} required/>
+                        <Label for="desctb">Admin</Label>
+                        <Input type="text" className="form-control" value={this.state.admin} name="admin" onChange={this.handleChange} required/>
                     </FormGroup>
                     <Row form>
                         <Col md={6}>
                             <FormGroup>
                                 <Label for="starttb">Start Date</Label>
-                                <Input type="datetime-local" placeholder="The start date of the election" name="start" id="starttb" min={Moment().format('YYYY-MM-DD')}  onChange={this.handleChange} required/>
+                                <Input type="date" placeholder="The start date of the election" name="start" id="starttb" min={Moment().format('YYYY-MM-DD')}  onChange={this.handleChange} required/>
                             </FormGroup>
                         </Col>
                         <Col md={6}>
