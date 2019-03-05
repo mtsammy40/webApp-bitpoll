@@ -15,6 +15,7 @@ import UpdateForm from './update';
 import NewReg from './newReg';
 import NewAdmin from './newAdmin';
 import NewElection from './newElection';
+import NewVoter from './newVoter';
 
 export default class IDashboard extends React.Component{
     constructor(props){
@@ -32,7 +33,9 @@ export default class IDashboard extends React.Component{
         this.profile = {};
         this.fetchAdmins = this.fetchAdmins.bind(this);
         this.fetchRegs = this.fetchRegs.bind(this);
+        this.fetchVoters = this.fetchVoters.bind(this);
         this.fetchCountries = this.fetchCountries.bind(this);
+        this.fetchInsts = this.fetchInsts.bind(this);
         this.fetchElecs = this.fetchElecs.bind(this);
         this.getCandidates = this.getCandidates.bind(this);
         this.toggle = this.toggle.bind(this);
@@ -57,6 +60,15 @@ export default class IDashboard extends React.Component{
         let UpdateProfile = this.state.Admins[0];
         this.setState({ UpdateProfile });
         console.log('update profile ', this.profile);
+    }).catch(error=> {
+        console.log(error.response);
+    });
+    }
+    fetchVoters = ()=>{
+        Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res => {
+        const Voters = res.data;
+        this.setState({ Voters });
+        console.log('Voter', this.state.Voters);
     }).catch(error=> {
         console.log(error.response);
     });
@@ -87,14 +99,24 @@ export default class IDashboard extends React.Component{
             console.log('countries', countries);
             this.setState({ countries });
         }).catch(e=>{
-            console.log('e', e.responseText);     
+            console.log('e', e);     
+        });
+    }
+    fetchInsts(){
+        Api.get('org.bitpoll.net.Institution', { withCredentials: true}).then(res => {
+            const Insts = res.data;
+            this.setState({ Insts });
+        }).catch(error=> {
+            console.log(error.response);
         });
     }
     
     componentWillMount(){
         this.fetchAdmins();
+        this.fetchVoters();
         this.fetchRegs();
         this.fetchElecs();
+        this.fetchInsts();
         this.fetchCountries();
     }
     
@@ -151,11 +173,18 @@ export default class IDashboard extends React.Component{
         let institList = this.state.Admins.map(Admin => <CardText key={Admin.Id}>{Admin.name}</CardText>)
         let myDetails = this.state.Admins;
         let countriesList = [];
+        let Insts;
         let myAdmin = {'id': 'default'};
         if(!this.state.Admins){
             myAdmin={'id': 'default'};
         } else {
             myAdmin = this.state.Admins[0];
+        }
+
+        if(!this.state.Insts){
+            Insts = ["none"];
+        } else {
+            Insts = this.state.Insts;
         }
         if(!this.state.countries){
             countriesList=["Kenya"];
@@ -183,6 +212,70 @@ export default class IDashboard extends React.Component{
                     <a href={`${this.props.match.url}/UpdateProfile`} className="btn btn-success">Update</a>
                 </div>
                 return infotable;
+            }
+        }
+        // Functional Components
+        const VotersPage = (props)=>{
+            if(!this.state.Voters){
+                return <img src={Load} alt="loading..."></img>
+            } else {
+
+            
+            var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td></tr>)
+            return <Container>
+                        <Row>
+                            <Col md={12}>
+                                <Card className="mt shadow">
+                                <CardBody>
+                                <CardTitle><h2>New Voter</h2></CardTitle>
+                                <NewVoter></NewVoter>
+                                </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={12}>
+                                <Card className="shadow mt">
+                                    <CardBody>
+                                        <CardTitle>Voters</CardTitle>
+                                        <Row>
+                                            <Table>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Id</th>
+                                                    <th>Date of Birth</th>
+                                                </tr>
+                                                <tbody>
+                                                    {votersList}
+                                                </tbody>
+                                                <tr></tr>
+                                            </Table>
+                                        </Row>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                </Container>
+            }
+        }
+        const GetData = (props)=>{
+            if(!this.state.Voters || !this.state.Regs){
+                return <img src={Load} alt="Loading..."></img>
+            } else {
+                switch(props.part){
+                    case 'voter':
+                        console.log('voterdash', this.state.Voters.length);
+                        return this.state.Voters.length;
+                    case 'election':
+                        return this.state.Elections.length;
+                    case 'admin':
+                        return this.state.Admins.length;
+                    case 'regulator':
+                        return this.state.Regs.length;
+                    default:
+                        return 'loading...';
+                }
             }
         }
         const MyAdmins= ()=>{
@@ -230,7 +323,8 @@ export default class IDashboard extends React.Component{
         const ActiveElections = () => {
             if(this.state.chartData){
                 console.log('chartData', this.state.chartData);
-                const AE = this.state.chartData.map((c, i) => <Container key={i}>
+                const AE = this.state.chartData.map((c, i) => <Container className="shadow mt" key={i}>
+                <h2>{c.datasets[0].label}</h2>
                 <Row>
                     <Col md={8}>
                         <Pie data={c} options={this.state.chartOptions}></Pie> 
@@ -381,8 +475,20 @@ export default class IDashboard extends React.Component{
                     <CardImg></CardImg>
                         <CardBody>
                             <CardTitle>
-                                <span><h4>Institutions</h4></span>
-                                <span className="pull-right ">{this.state.Institutions.length}</span>
+                                <span><h4>Voters</h4></span>
+                                <span className="pull-right "><GetData part='voter'></GetData></span>
+                            </CardTitle>
+                            
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col md={3}>
+                <Card className="shadow mt">
+                    <CardImg></CardImg>
+                        <CardBody>
+                            <CardTitle>
+                                <span><h4>Regulators</h4></span>
+                                <span className="pull-right "><GetData part='regulator'></GetData></span>
                             </CardTitle>
                             
                         </CardBody>
@@ -478,121 +584,125 @@ export default class IDashboard extends React.Component{
                         <img src={Dp} alt="pic" height="150px" width="150px" />
                     </div>
                     <div className="sidelinks">
-                        <a href={`${this.props.match.url}`}>Home</a>
+                        <a href={`${this.props.match.url}/`}>Home</a>
                         <a href={`${this.props.match.url}/Admins`}>Admins</a>
                         <a href={`${this.props.match.url}/Elections`}>Elections</a>
-                        <a href={`${this.props.match.url}/newRegulator`}>New Regulator</a>
+                        <a href={`${this.props.match.url}/Regulators`}>Regulators</a>
+                        <a href={`${this.props.match.url}/Voters`}>Voters</a>
                     </div>
                 </div>
-                <div className="content-wrapper">
-                <Route exact path={`${this.props.match.url}`} component={DashHome}/>
-                <Route exact path={`${this.props.match.url}/newRegulator`} render={(props)=>
-                <Container>
-                    <Row>
-                        <Col md={12}>
+                    <div className="content-wrapper">
+                    <Route exact path={`${this.props.match.url}/`} component={DashHome}/>
+                    <Route exact path={`${this.props.match.url}Regulators`} render={(props)=>
+                    <Container>
+                        <Row>
+                            <Col md={12}>
+                                <Card className="shadow mt">
+                                    <CardBody>
+                                        <CardTitle>
+                                            <h2>My Regulators</h2>
+                                        </CardTitle>
+                                        <MyRegs></MyRegs>
+                                        
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={12}>
+                                <Card className="shadow mt">
+                                    <CardBody>
+                                        <NewReg></NewReg>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Container>}/>
+                    <Route path={`${this.props.match.url}/Admins`}render={
+                        (props)=><Container><Row>
+                        <Col md={{size: 12}} >
                             <Card className="shadow mt">
+                                <CardImg></CardImg>
                                 <CardBody>
                                     <CardTitle>
-                                        <h2>My Regulators</h2>
+                                        <h2>Admins</h2>
                                     </CardTitle>
-                                    <MyRegs></MyRegs>
-                                    
+                                        <MyAdmins></MyAdmins>
                                 </CardBody>
                             </Card>
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={12}>
-                            <Card className="shadow mt">
-                                <CardBody>
-                                    <NewReg></NewReg>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container>}/>
-                <Route path={`${this.props.match.url}/Admins`}render={
-                    (props)=><Container><Row>
                     <Col md={{size: 12}} >
                         <Card className="shadow mt">
                             <CardImg></CardImg>
                             <CardBody>
                                 <CardTitle>
-                                    <h2>Admins</h2>
+                                    <h2>Admins By gender</h2>
                                 </CardTitle>
-                                    <MyAdmins></MyAdmins>
+                                    <MyAdminsChart></MyAdminsChart>
                             </CardBody>
                         </Card>
                     </Col>
                 </Row>
                 <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                            <CardTitle>
-                                <h2>Admins By gender</h2>
-                            </CardTitle>
-                                <MyAdminsChart></MyAdminsChart>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                          <NewAdmin></NewAdmin>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-            </Container>
-            }/>
-                <Route path={`${this.props.match.url}/Elections`} render={
-                    (props)=><Container {...props} elections={this.state.elections}>
-                     <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                            <CardTitle>
-                                <h2>Elections</h2>
-                            </CardTitle>
-                                <MyElections></MyElections>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={{size: 12}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
-                        <CardBody>
-                            <CardTitle>
-                                <h2>New Elections</h2>
-                            </CardTitle>
-                                <NewElection admin={myAdmin}></NewElection>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row></Container>}/>
-            <Route path={`${this.props.match.url}/UpdateProfile`} render={
-                    (props)=>
-                    <Container>
+                    <Col md={{size: 12}} >
+                        <Card className="shadow mt">
+                            <CardImg></CardImg>
+                            <CardBody>
+                            <NewAdmin insts = {Insts}></NewAdmin>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                </Container>
+                }/>
+                    <Route path={`${this.props.match.url}/Elections`} render={
+                        (props)=><Container {...props} elections={this.state.elections}>
                         <Row>
-                            <Col md={12}>
-                                <Card className="mt shadow">
-                                <CardBody>
-                                <CardTitle><h2>Update Information</h2></CardTitle>
-                                <Upform {...props} profile={this.state.Admins[0]}></Upform>
-                                </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </Container>
-                    }/>
+                    <Col md={{size: 12}} >
+                        <Card className="shadow mt">
+                            <CardImg></CardImg>
+                            <CardBody>
+                                <CardTitle>
+                                    <h2>Elections</h2>
+                                </CardTitle>
+                                    <MyElections></MyElections>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={{size: 12}} >
+                        <Card className="shadow mt">
+                            <CardImg></CardImg>
+                            <CardBody>
+                                <CardTitle>
+                                    <h2>New Elections</h2>
+                                </CardTitle>
+                                    <NewElection admin={myAdmin}></NewElection>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row></Container>}/>
+                <Route path={`${this.props.match.url}/UpdateProfile`} render={
+                        (props)=>
+                        <Container>
+                            <Row>
+                                <Col md={12}>
+                                    <Card className="mt shadow">
+                                    <CardBody>
+                                    <CardTitle><h2>Update Information</h2></CardTitle>
+                                    <Upform {...props} profile={this.state.Admins[0]}></Upform>
+                                    </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </Container>
+                        }/>
+                <Route path={`${this.props.match.url}/Voters`} render={
+                        (props)=><VotersPage></VotersPage>
+                        }/>
                 </div>
             </div>
             

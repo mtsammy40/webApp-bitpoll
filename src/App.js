@@ -70,6 +70,7 @@ class App extends Component {
         <div>
           <Switch>
             <Route path="/SignUp" component={Voter} />
+            <Route exact path="/" component={Header} />
             <Route exact path="/Feed" component={Feed} />
             <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>
             <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} Voters={this.state.Voter} Institutions={this.state.Institutions} loginHandler={this.loginHandler} profile={this.state.profileData}/>}  />

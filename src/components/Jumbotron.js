@@ -1,8 +1,9 @@
 import React from 'react';
-import { Col,Jumbotron, Button, Row, Container} from 'reactstrap';
+import { Col,Jumbotron, Button, Row, Container, Card, CardBody, CardTitle} from 'reactstrap';
 import '../App.css';
 import security from '../Images/security.png';
 import transparency from '../Images/transparency.jpg';
+import NewInst from './newInstitution';
 
 const Header = (props) => {
   return (
@@ -48,6 +49,16 @@ const Header = (props) => {
             <Col md={{size:6}} className="overflow-hidden">
               <img src={transparency} width={600} alt="transparency"></img>
             </Col>
+        </Row>
+        <Row>
+          <Card>
+            <CardBody className="shadow mt">
+              <CardTitle>
+                <h2>Register your Institution Today!!</h2>
+              </CardTitle>
+              <NewInst></NewInst>
+            </CardBody>
+          </Card>
         </Row>
         
         

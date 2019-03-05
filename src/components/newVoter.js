@@ -1,12 +1,12 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
 import Api from '../api/api';
-export default class NewAdmin extends React.Component {
+export default class NewVoter extends React.Component {
   constructor(props){
     super(props);
     this.state =  {
-      "gender": "male",
-      institution: this.props.insts[0]  
+        gender : "male",
+        valid: true, 
     };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
@@ -44,13 +44,12 @@ export default class NewAdmin extends React.Component {
   handleSubmit(e){
     e.preventDefault();
     delete this.state.countries;
-    Api.post('org.bitpoll.net.Admin', this.state, { withCredentials: true}).then(res => {
+    Api.post('org.bitpoll.net.Voter', this.state, { withCredentials: true}).then(res => {
         alert('successful');
     }).catch(error => {
         alert('Please recheck your data and retry');
         console.log(error.response);
     });
-
   }
   componentDidMount(){
     Api.get('https://restcountries.eu/rest/v2/all?fields=name',).then(res => {
@@ -59,7 +58,7 @@ export default class NewAdmin extends React.Component {
       this.setState({ countries });
     }).catch(e=>{
       console.log('e', e.responseText);
-    });
+    })
   }
   render() {
     let countriesList=[];
@@ -120,25 +119,17 @@ export default class NewAdmin extends React.Component {
             </Col>
             <Col md={4}>
               <FormGroup>
+                <Label for="poboxtb">ID Number</Label>
+                <Input type="text" name="id" id="idtb" onChange={this.handleChange} required />
+              </FormGroup>  
+            </Col>
+            <Col md={4}>
+              <FormGroup>
                 <Label for="poboxtb">National ID Number</Label>
-                <Input type="text" name="id" id="idtb" onChange={this.handleChange} />
+                <Input type="text" name="nationalId" id="idtb" onChange={this.handleChange} />
               </FormGroup>  
             </Col>
           </Row>
-          <Row>
-            <Col md={6}>
-            <FormGroup>
-                <Label for="dp">Dp</Label>
-                <Input type="text" name="dp" onChange={this.handleChange} />
-              </FormGroup>
-            </Col>
-            <Col md={6}>
-            <FormGroup>
-                <Label for="dp">Phone Number</Label>
-                <Input type="text" name="phoneNo" onChange={this.handleChange} />
-              </FormGroup>
-            </Col>
-          </Row>         
           <Input type="submit" value="Sign up" className="btn btn-success" />
         </Form>
       </Container>

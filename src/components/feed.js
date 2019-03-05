@@ -37,7 +37,7 @@ export default class Feed extends React.Component{
         <ListGroupItem className="justify-content-between">End Date: <Badge pill>{feed.end}</Badge></ListGroupItem>
       </ListGroup></CardText>
                 <Button className="btn btn-primary" href={"/DumbFeed/" + feed.electionId}>View Election results</Button>
-                <Button className="btn btn-primary" href={"/Feed/" + feed.electionId} disabled>Go to election</Button>
+                <Button className="btn btn-primary ml-auto" href={"/vote/" + feed.electionId}>Go to election</Button>
             </CardBody>
             <CardFooter><Badge color="success">Ongoing</Badge></CardFooter>
         </Card>
