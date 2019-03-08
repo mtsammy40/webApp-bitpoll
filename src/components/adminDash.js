@@ -16,6 +16,7 @@ import NewReg from './newReg';
 import NewAdmin from './newAdmin';
 import NewElection from './newElection';
 import NewVoter from './newVoter';
+import PendingAdmin from './pendingAdmins';
 
 export default class IDashboard extends React.Component{
     constructor(props){
@@ -25,7 +26,6 @@ export default class IDashboard extends React.Component{
             Institutions:[],
             Admins: [],
             Elections: [],
-            candidates: [],
             modal: false,
             UpdateProfileModal: false,
             UpdateProfile: {}
@@ -125,7 +125,7 @@ export default class IDashboard extends React.Component{
         for(var j = 0; j<this.state.Elections.length; j++){
             var candidates; const labels=[]; const data=[]; const backgroundColors=[]; var f = 0;
             for(var i=0; i<this.state.Elections[j].candidates.length; i++){
-                Api.get('org.bitpoll.net.Candidate#'+ this.state.Elections[0].candidates[i].split('#').pop(), {withCredentials: true})
+                Api.get('org.bitpoll.net.Candidate#'+ this.state.Elections[j].candidates[i].split('#').pop(), {withCredentials: true})
                 // eslint-disable-next-line no-loop-func
                 .then((cand)=>{
                     candidates= cand.data;
@@ -343,8 +343,23 @@ export default class IDashboard extends React.Component{
             return <p>No active elections to show</p>  
             }
         }
-        const ViewCandidates = () =>{
-            let candidates = this.state.candidates.map(e=><Card className="shadow mt">
+        const ViewCandidates = (props) =>{
+            if(!this.state.candidates){
+                return <div>Loading...</div>
+            } else {
+            let mycandidates=[];
+            let election = this.state.Elections.find((e)=>{
+                return e.electionId === props.elec;
+            });
+            console.log('okay elec', election);
+            election.candidates.forEach((c)=>{
+                let candidate = this.state.candidates.find((cand)=>{
+                    return cand.candidateId === c.split('#').pop();
+                });
+                mycandidates.push(candidate); 
+            });
+            console.log('okay candidates', mycandidates);
+            let candidates = mycandidates.map(e=><Card className="shadow mt">
                 <CardImg></CardImg>
                 <CardHeader>{e.name}</CardHeader>
                 <CardBody>
@@ -353,24 +368,25 @@ export default class IDashboard extends React.Component{
             </Card>)
             return <div>
             <button className="btn btn-secondary" onClick={this.toggle}>View Candidates</button>
-            <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-            <ModalHeader toggle={this.toggle}>Results for: {this.state.Elections[0].motion}</ModalHeader>
+            <Modal isOpen={this.state.modal} toggle={this.toggle} className={props.className}>
+            <ModalHeader toggle={this.toggle}>Results for: {election.motion}</ModalHeader>
             <ModalBody>
                 {candidates}
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
                 <Button color="secondary" onClick={this.toggle}>Cancel</Button>
             </ModalFooter>
             </Modal>
         </div>
+            }
+            
         }
         const MyElections = ()=>{
             if(!this.state.Elections){
                 return <tr><td>No elections created</td></tr>
             } else {
                 var electionslist = this.state.Elections.map(e =>       
-                    <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><ViewCandidates></ViewCandidates></td></tr>
+                    <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><ViewCandidates elec = {e.electionId}></ViewCandidates></td></tr>
                 );
                 return <Table>
                     <th>Id</th>
@@ -644,6 +660,9 @@ export default class IDashboard extends React.Component{
                             </CardBody>
                         </Card>
                     </Col>
+                </Row>
+                <Row>
+                    <PendingAdmin></PendingAdmin>
                 </Row>
                 <Row>
                     <Col md={{size: 12}} >

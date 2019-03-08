@@ -1,12 +1,14 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
 import Api from '../api/api';
+import Axios from 'axios';
 export default class NewAdmin extends React.Component {
   constructor(props){
     super(props);
     this.state =  {
       "gender": "male",
-      institution: this.props.insts[0]  
+      institution: this.props.insts[0],
+      nationality: 'Kenya'  
     };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
@@ -44,13 +46,17 @@ export default class NewAdmin extends React.Component {
   handleSubmit(e){
     e.preventDefault();
     delete this.state.countries;
-    Api.post('org.bitpoll.net.Admin', this.state, { withCredentials: true}).then(res => {
+    /* Api.post('org.bitpoll.net.Admin', this.state, { withCredentials: true}).then(res => {
         alert('successful');
     }).catch(error => {
         alert('Please recheck your data and retry');
         console.log(error.response);
+    }); */
+    Axios.post('http://localhost:3007/NewPendingAdmin/', this.state).then(res=>{
+      if(res.statusCode === '200') alert('successful');
+    }).catch(e=>{
+      console.log('anfeliaforos imekataa', e.responseText);
     });
-
   }
   componentDidMount(){
     Api.get('https://restcountries.eu/rest/v2/all?fields=name',).then(res => {

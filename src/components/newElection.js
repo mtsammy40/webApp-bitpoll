@@ -24,11 +24,15 @@ export default class NewElection extends React.Component{
     handleBlur(e){
         // want a multidimensional array? https://itnext.io/building-a-dynamic-controlled-form-in-react-together-794a44ee552c
         var candidateNames = [];
+        var categories = [];
         for(var i=1; i<=this.state.cand_no; i++){
             var name = document.getElementById("cand_name_"+i).value;
+            var category = document.getElementById("cand_cat_"+i).value;
             candidateNames.push(name);
+            categories.push(category);
         }
         this.setState({ candidateNames });
+        this.setState({ categories });
     }
     handleSubmit(e){
 
@@ -64,8 +68,10 @@ export default class NewElection extends React.Component{
             }
             const ListItem = tb.map( (t) =>  
             <FormGroup key={t.toString()} >
-                <Label>Candidate {t} </Label>
+                <Label>Candidate {t.toString()} </Label>
                 <Input type="text" name="cand_name" id={'cand_name_'+t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} required/>
+                <Label>Category for candidate {t.toString()} </Label>
+                <Input type="text" name="cand_cat" id={'cand_cat_'+t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} required/>
             </FormGroup>
             );
             const minDate = new Date(Date.now());
