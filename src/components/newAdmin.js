@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
 import Api from '../api/api';
-import Axios from 'axios';
+import Angel from '../api/angel';
 export default class NewAdmin extends React.Component {
   constructor(props){
     super(props);
@@ -52,7 +52,7 @@ export default class NewAdmin extends React.Component {
         alert('Please recheck your data and retry');
         console.log(error.response);
     }); */
-    Axios.post('http://localhost:3007/NewPendingAdmin/', this.state).then(res=>{
+    Angel.post('NewPendingAdmin/', this.state).then(res=>{
       if(res.statusCode === '200') alert('successful');
     }).catch(e=>{
       console.log('anfeliaforos imekataa', e.responseText);
@@ -96,15 +96,16 @@ export default class NewAdmin extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="nationalitytb">Nationality</Label>
-                <Input type="select" name="nationality" id="nationalitytb" placeholder="e.g Kenyan" onChange={this.handleChange}>
+                <Input type="select" name="nationality" id="nationalitytb" placeholder="e.g Kenyan" onChange={this.handleChange} required>
                   {countriesList}
+                  <option>Kenya</option>
                 </Input>
               </FormGroup>
             </Col>
             <Col md={3}>
               <FormGroup>
                 <Label for="gendertb">Gender</Label>
-                <Input type="select" name="gender" id="gendertb" value={this.state.gender} onChange={this.handleChange}>
+                <Input type="select" name="gender" id="gendertb" value={this.state.gender} onChange={this.handleChange} required>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </Input>
@@ -113,7 +114,7 @@ export default class NewAdmin extends React.Component {
             <Col md={6}>
               <FormGroup>
                 <Label for="Date of Birth">Date Of Birth</Label>
-                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} />
+                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} required/>
               </FormGroup>
             </Col>
           </Row>
@@ -127,7 +128,7 @@ export default class NewAdmin extends React.Component {
             <Col md={4}>
               <FormGroup>
                 <Label for="poboxtb">National ID Number</Label>
-                <Input type="text" name="id" id="idtb" onChange={this.handleChange} />
+                <Input type="text" name="id" id="idtb" onChange={this.handleChange} required/>
               </FormGroup>  
             </Col>
           </Row>
@@ -141,7 +142,7 @@ export default class NewAdmin extends React.Component {
             <Col md={6}>
             <FormGroup>
                 <Label for="dp">Phone Number</Label>
-                <Input type="text" name="phoneNo" onChange={this.handleChange} />
+                <Input type="text" name="phoneNo" onChange={this.handleChange} required/>
               </FormGroup>
             </Col>
           </Row>         
