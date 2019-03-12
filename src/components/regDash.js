@@ -125,7 +125,7 @@ export default class RegDash extends React.Component{
             InfoCard = (props) =>{
                 const infotable =
                 <div>
-                    <Table>
+                    <Table responsive>
                         <tbody>
                             <tr><td>name: </td><td> {myDetails[0].name}</td></tr>
                             <tr><td>ID: </td><td> {myDetails[0].id}</td></tr>
@@ -146,7 +146,7 @@ export default class RegDash extends React.Component{
                 var Adminslist = this.state.Admins.map(v =>       
                     <tr key={v.email}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td></tr>
                 );
-                return <Table>
+                return <Table responsive>
                     <th>Email</th>
                     <th>Name</th>
                     <th>Nationality</th>
@@ -163,7 +163,7 @@ export default class RegDash extends React.Component{
                 var Adminslist = this.state.Regs.map(R =>       
                     <tr key={R.id}><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td></tr>
                 );
-                return <Table>
+                return <Table responsive>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Email</th>
@@ -189,7 +189,7 @@ export default class RegDash extends React.Component{
                             <Pie data={this.state.chartData} options={this.state.chartOptions}></Pie> 
                         </Col>
                         <Col md={4}>
-                            <Table>
+                            <Table responsive>
                                 <tr><td>Motion: </td><td>{this.state.chartData.datasets[0].label}</td></tr>
                                 <tr><td>Candidates: </td><td>{this.state.chartData.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
                             </Table>
@@ -232,7 +232,7 @@ export default class RegDash extends React.Component{
                 var electionslist = this.state.Elections.map(e =>       
                     <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><ViewCandidates></ViewCandidates></td></tr>
                 );
-                return <Table>
+                return <Table responsive>
                     <th>Id</th>
                     <th>Motion</th>
                     <th>Start Date</th>

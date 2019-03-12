@@ -48,7 +48,7 @@ export default class IDStats extends React.Component{
             InfoCard = () =>{
                 const infotable =
                 <div>
-                    <Table>
+                    <Table responsive>
                         <tbody>
                             <tr><td>name: </td><td> {myDetails[0].name}</td></tr>
                             <tr><td>Description: </td><td> {myDetails[0].description}</td></tr>

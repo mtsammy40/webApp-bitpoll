@@ -1,43 +1,23 @@
 import React from 'react';
-import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
+import { Col, Row, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import Api from '../api/api';
+
 export default class NewVoter extends React.Component {
   constructor(props){
     super(props);
     this.state =  {
         gender : "male",
-        valid: true, 
+        valid: true,
+        nationality: 'Kenya' 
     };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
-  }
-  validate(e){
-    switch(e.target.name){
-      case "phoneNo":
-        const reg = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/; 
-        if(!reg.test(e.target.value)){
-          var invalid = [];
-          invalid.push(e.target.name);
-          this.setState({invalid});
-        };
-      break;
-      case "phoneNo":
-        const phreg = /^[0-9]+$/;
-        if(!phreg.test(e.target.value)){
-        const {invalid} = this.state;
-        invalid.push(e.target.name);
-        this.setState({invalid});
-        };
-      break;
     }
- 
-  }
   handleChange(e){
     if(e.target.name=== "file"){
       this.setState({[e.target.name] : URL.createObjectURL(e.target.files[0])});
       console.log('files' + this.state.file);
     } else {
-      
       this.setState({[e.target.name] : e.target.value});
     }
   }
@@ -46,6 +26,7 @@ export default class NewVoter extends React.Component {
     delete this.state.countries;
     Api.post('org.bitpoll.net.Voter', this.state, { withCredentials: true}).then(res => {
         alert('successful');
+        this.props.onSuccess();
     }).catch(error => {
         alert('Please recheck your data and retry');
         console.log(error.response);
@@ -63,7 +44,7 @@ export default class NewVoter extends React.Component {
   render() {
     let countriesList=[];
     if(!this.state.countries){
-      countriesList=["Kenya"];
+      countriesList=[<option>Kenya</option>];
     } else {
       countriesList = this.state.countries.map((c, i) => <option key={i}>{c.name}</option>);
     }
@@ -75,13 +56,13 @@ export default class NewVoter extends React.Component {
             <Col md={6}>
               <FormGroup>
                 <Label for="fullnametb">Full Name</Label>
-                <Input type="text" name="name" id="fullnametb" placeholder="Please enter full name" onChange={this.handleChange} />
+                <Input type="text" name="name" id="fullnametb" placeholder="Please enter full name" onChange={this.handleChange} required/>
               </FormGroup>
             </Col>
             <Col md={6}>
               <FormGroup>
                 <Label for="emailtb">Email</Label>
-                <Input type="email" name="email" id="emailtb" placeholder="passomeone@mail.com" onChange={this.handleChange} />
+                <Input type="email" name="email" id="emailtb" placeholder="passomeone@mail.com" onChange={this.handleChange} required/>
               </FormGroup>
             </Col>
           </Row>
@@ -89,7 +70,7 @@ export default class NewVoter extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="nationalitytb">Nationality</Label>
-                <Input type="select" name="nationality" id="nationalitytb" placeholder="e.g Kenyan" onChange={this.handleChange}>
+                <Input type="select" name="nationality" value={this.state.nationality} id="nationalitytb" placeholder="e.g Kenyan" onChange={this.handleChange} required>
                   {countriesList}
                 </Input>
               </FormGroup>
@@ -97,7 +78,7 @@ export default class NewVoter extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="gendertb">Gender</Label>
-                <Input type="select" name="gender" id="gendertb" value={this.state.gender} onChange={this.handleChange}>
+                <Input type="select" name="gender" id="gendertb" value={this.state.gender} onChange={this.handleChange} required>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </Input>
@@ -106,7 +87,7 @@ export default class NewVoter extends React.Component {
             <Col md={6}>
               <FormGroup>
                 <Label for="Date of Birth">Date Of Birth</Label>
-                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} />
+                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" onChange={this.handleChange} required/>
               </FormGroup>
             </Col>
           </Row>

@@ -17,6 +17,7 @@ import IDashboard from './components/adminDash';
 import Header from './components/Jumbotron';
 import RegDash from './components/regDash';
 import DumbFeed from './components/dumbFeed';
+import VoterProfile from './components/voterProfile';
 
 
 class App extends Component {
@@ -82,6 +83,7 @@ class App extends Component {
             <Route path="/IDashboard" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
             <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} profile={this.state.profile}/>} />
             <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
+            <Route path="/VoterProfile" render={(props)=><VoterProfile {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
           </Switch>
         </div>

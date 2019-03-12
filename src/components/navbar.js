@@ -44,11 +44,15 @@ export default class Navigation extends React.Component {
                 <NavLink href="/IDashboard/">Dashboard</NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/VoterProfile/">Voter</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/RegulatorDashboard/">Reg Dashboard</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>
               </NavItem>
+              
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
                   Email

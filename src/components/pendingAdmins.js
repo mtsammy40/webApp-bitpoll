@@ -6,18 +6,10 @@ import angel from '../api/angel';
 export default class PendingAdmin extends React.Component{
     constructor(props){
         super(props);
-        this.state = {}
+        this.state = {
+            pendingAdmins: this.props.pendingAdmins
+        }
         this.Approve = this.Approve.bind(this);
-        this.fetchPAdmins = this.fetchPAdmins.bind(this);
-    }
-    fetchPAdmins(){
-        angel.get('AllPendingAdmins/').then(res=>{
-            var pendingAdmins = res.data;
-            this.setState({ pendingAdmins });
-            console.log('response angelia', this.state.pendingAdmins)
-        }).catch(e=>{
-            console.log('No P Admins', e.response);
-        });
     }
     Approve(approved){
         delete approved._id;
@@ -47,7 +39,7 @@ export default class PendingAdmin extends React.Component{
                 .then(res=>{
                     console.log('apprroved id deep ', approved.id)
                     angel.post('approveAdmin/', {id: approved.id}).then((res)=>{
-                        alert("email sent and \n" + res.response);
+                        alert("email sent and \n" + res);
                     }).catch(e=>{
                         console.log('alar email', e);
                     });
@@ -61,18 +53,15 @@ export default class PendingAdmin extends React.Component{
             console.log('No P Admins', e.responseText);
         });
     }
-    componentDidMount(){
-        this.fetchPAdmins();
-    }
     render(){
         const DisplayPAdmins = ()=>{
-            if(!this.state.pendingAdmins){
-                return <p> There's nothing to see here! </p>
+            if(!this.props.pendingAdmins){
+                return <p className="text-center text-primary"> Currently, there are no Pending Admin applications! </p>
             } else {
-                 let list = this.state.pendingAdmins.map(p=>
+                 let list = this.props.pendingAdmins.map(p=>
                  <tr key={p._id}><td>{p.name}</td><td>{p.id}</td><td>{p.email}</td><td><Button onClick={(e)=>{this.Approve(p)}}>Approve</Button></td></tr>
                  );
-                return <Table>
+                return <Table responsive>
                     <tr>
                         <th>Name</th>
                         <th>Id</th>
@@ -90,7 +79,9 @@ export default class PendingAdmin extends React.Component{
                 <Row>
                     <Col md={12}>
                         <Card className="shadow mt">
+                            
                             <CardBody>
+                                <CardTitle><h2>Pending Admins</h2></CardTitle>
                                 <DisplayPAdmins></DisplayPAdmins>
                             </CardBody>
                         </Card>

@@ -1,3 +1,9 @@
+Table{
+  overflow-x: scroll;
+}
+.overflow{
+  overflow-x: scroll;
+}
 .App {
   text-align: center;
 }

@@ -17,6 +17,8 @@ import NewAdmin from './newAdmin';
 import NewElection from './newElection';
 import NewVoter from './newVoter';
 import PendingAdmin from './pendingAdmins';
+import angel from '../api/angel';
+import MyAdmins from './myAdmins'
 
 export default class IDashboard extends React.Component{
     constructor(props){
@@ -27,19 +29,24 @@ export default class IDashboard extends React.Component{
             Admins: [],
             Elections: [],
             modal: false,
+            DeleteModal: false,
             UpdateProfileModal: false,
-            UpdateProfile: {}
+            UpdateProfile: {},
         };
         this.profile = {};
         this.fetchAdmins = this.fetchAdmins.bind(this);
+        this.fetchPAdmins = this.fetchPAdmins.bind(this);
         this.fetchRegs = this.fetchRegs.bind(this);
         this.fetchVoters = this.fetchVoters.bind(this);
         this.fetchCountries = this.fetchCountries.bind(this);
         this.fetchInsts = this.fetchInsts.bind(this);
         this.fetchElecs = this.fetchElecs.bind(this);
+        this.deleteAdmin = this.deleteAdmin.bind(this);
         this.getCandidates = this.getCandidates.bind(this);
         this.toggle = this.toggle.bind(this);
         this.toggleUpdateProfile = this.toggleUpdateProfile.bind(this);
+        this.toggleSuccessModal = this.toggleSuccessModal.bind(this);
+        this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     }
 
     toggle() {
@@ -50,6 +57,16 @@ export default class IDashboard extends React.Component{
     toggleUpdateProfile(){
         this.setState(prevState => ({
             UpdateProfileModal: !prevState.UpdateProfileModal
+          }));
+      }
+      toggleSuccessModal(){
+        this.setState(prevState => ({
+            SuccessModal: !prevState.SuccessModal
+          }));
+      }
+      toggleDeleteModal(){
+        this.setState(prevState => ({
+            DeleteModal: !prevState.DeleteModal
           }));
       }
     fetchAdmins = ()=>{
@@ -63,6 +80,15 @@ export default class IDashboard extends React.Component{
     }).catch(error=> {
         console.log(error.response);
     });
+    }
+    fetchPAdmins(){
+        angel.get('AllPendingAdmins/').then(res=>{
+            var pendingAdmins = res.data;
+            this.setState({ pendingAdmins });
+            console.log('response angelia', this.state.pendingAdmins)
+        }).catch(e=>{
+            console.log('No P Admins', e.response);
+        });
     }
     fetchVoters = ()=>{
         Api.get('org.bitpoll.net.Voter', { withCredentials: true}).then(res => {
@@ -110,8 +136,19 @@ export default class IDashboard extends React.Component{
             console.log(error.response);
         });
     }
+    deleteAdmin(id){
+        Api.delete('org.bitpoll.net.Admin/'+id, {withCredentials: true}).then(res=>{
+            this.fetchAdmins();
+            var SuccessMessage="Admin Successfuly Deleted";
+            this.setState({SuccessMessage});
+            this.toggleDeleteModal();
+        }).catch(e=>{
+            console.log('error in delete admin', e);
+        });
+    }
     
     componentWillMount(){
+        this.fetchPAdmins();
         this.fetchAdmins();
         this.fetchVoters();
         this.fetchRegs();
@@ -200,7 +237,7 @@ export default class IDashboard extends React.Component{
             InfoCard = (props) =>{
                 const infotable =
                 <div>
-                    <Table>
+                    <Table responsive>
                         <tbody>
                             <tr><td>name: </td><td> {myDetails[0].name}</td></tr>
                             <tr><td>ID: </td><td> {myDetails[0].id}</td></tr>
@@ -209,7 +246,19 @@ export default class IDashboard extends React.Component{
                             <tr><td>Gender: </td><td> {myDetails[0].gender}</td></tr>
                         </tbody>
                     </Table>
-                    <a href={`${this.props.match.url}/UpdateProfile`} className="btn btn-success">Update</a>
+                    <Button color="danger" onClick={this.toggleUpdateProfile}>Update</Button>
+                    <div>
+        <Modal isOpen={this.state.UpdateProfileModal} toggle={this.toggleUpdateProfile} className={this.props.className}>
+          <ModalHeader toggle={this.toggleUpdateProfile}>Modal title</ModalHeader>
+          <ModalBody>
+              <UpdateForm profile={this.state.Admins[0]}></UpdateForm>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>{' '}
+            <Button color="secondary" onClick={this.toggleUpdateProfile}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+      </div>
                 </div>
                 return infotable;
             }
@@ -228,7 +277,7 @@ export default class IDashboard extends React.Component{
                                 <Card className="mt shadow">
                                 <CardBody>
                                 <CardTitle><h2>New Voter</h2></CardTitle>
-                                <NewVoter></NewVoter>
+                                <NewVoter onSuccess={this.fetchVoters}></NewVoter>
                                 </CardBody>
                                 </Card>
                             </Col>
@@ -239,7 +288,7 @@ export default class IDashboard extends React.Component{
                                     <CardBody>
                                         <CardTitle>Voters</CardTitle>
                                         <Row>
-                                            <Table>
+                                            <Table responsive>
                                                 <tr>
                                                     <th>Name</th>
                                                     <th>Gender</th>
@@ -278,23 +327,7 @@ export default class IDashboard extends React.Component{
                 }
             }
         }
-        const MyAdmins= ()=>{
-            if(!this.state.Admins){
-                return <tr><td>Loading Admins...</td></tr>
-            } else {
-                var Adminslist = this.state.Admins.map(v =>       
-                    <tr key={v.email}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td><button className="btn btn-danger">Remove</button></td></tr>
-                );
-                return <Table>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Nationality</th>
-                    <th>gender</th>
-                    <th>Remove</th>
-                    <tbody>{Adminslist}</tbody>
-                    </Table>;
-            }
-        }
+        
         const MyRegs= ()=>{
             if(!this.state.Regs){
                 return <img src={Load} alt="Loading Regulators"></img>
@@ -302,7 +335,7 @@ export default class IDashboard extends React.Component{
                 var Regslist = this.state.Regs.map(R =>       
                     <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary">Edit</button></td><td><button className="btn btn-danger">Remove</button></td></tr>
                 );
-                return <Table>
+                return <Table responsive>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Email</th>
@@ -330,7 +363,7 @@ export default class IDashboard extends React.Component{
                         <Pie data={c} options={this.state.chartOptions}></Pie> 
                     </Col>
                     <Col md={4}>
-                        <Table>
+                        <Table responsive>
                             <tr><td>Motion: </td><td>{c.datasets[0].label}</td></tr>
                             <tr><td>Candidates: </td><td>{c.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
                             <tr><td>Total Votes: </td><td>{c.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
@@ -388,7 +421,7 @@ export default class IDashboard extends React.Component{
                 var electionslist = this.state.Elections.map(e =>       
                     <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><ViewCandidates elec = {e.electionId}></ViewCandidates></td></tr>
                 );
-                return <Table>
+                return <Table responsive>
                     <th>Id</th>
                     <th>Motion</th>
                     <th>Start Date</th>
@@ -505,8 +538,7 @@ export default class IDashboard extends React.Component{
                             <CardTitle>
                                 <span><h4>Regulators</h4></span>
                                 <span className="pull-right "><GetData part='regulator'></GetData></span>
-                            </CardTitle>
-                            
+                            </CardTitle>            
                         </CardBody>
                     </Card>
                 </Col>
@@ -609,7 +641,7 @@ export default class IDashboard extends React.Component{
                 </div>
                     <div className="content-wrapper">
                     <Route exact path={`${this.props.match.url}/`} component={DashHome}/>
-                    <Route exact path={`${this.props.match.url}Regulators`} render={(props)=>
+                    <Route exact path={`${this.props.match.url}/Regulators`} render={(props)=>
                     <Container>
                         <Row>
                             <Col md={12}>
@@ -643,7 +675,7 @@ export default class IDashboard extends React.Component{
                                     <CardTitle>
                                         <h2>Admins</h2>
                                     </CardTitle>
-                                        <MyAdmins></MyAdmins>
+                                        <MyAdmins Admins = {this.state.Admins} onDelete = {this.deleteAdmin}></MyAdmins>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -662,14 +694,14 @@ export default class IDashboard extends React.Component{
                     </Col>
                 </Row>
                 <Row>
-                    <PendingAdmin></PendingAdmin>
+                    <PendingAdmin onSuccess={this.fetchAdmins} pendingAdmins={this.state.pendingAdmins}></PendingAdmin>
                 </Row>
                 <Row>
                     <Col md={{size: 12}} >
                         <Card className="shadow mt">
                             <CardImg></CardImg>
                             <CardBody>
-                            <NewAdmin insts = {Insts}></NewAdmin>
+                            <NewAdmin onSuccess={this.fetchPAdmins} insts = {Insts}></NewAdmin>
                             </CardBody>
                         </Card>
                     </Col>

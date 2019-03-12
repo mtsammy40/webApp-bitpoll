@@ -53,7 +53,10 @@ export default class NewAdmin extends React.Component {
         console.log(error.response);
     }); */
     Angel.post('NewPendingAdmin/', this.state).then(res=>{
-      if(res.statusCode === '200') alert('successful');
+      if(res.statusCode === '200'){
+        alert('successful');
+        this.props.onSuccess();
+      } 
     }).catch(e=>{
       console.log('anfeliaforos imekataa', e.responseText);
     });
@@ -70,7 +73,7 @@ export default class NewAdmin extends React.Component {
   render() {
     let countriesList=[];
     if(!this.state.countries){
-      countriesList=["Kenya"];
+      countriesList=[<option value="kenya">Kenya</option>];
     } else {
       countriesList = this.state.countries.map((c, i) => <option key={i}>{c.name}</option>);
     }
