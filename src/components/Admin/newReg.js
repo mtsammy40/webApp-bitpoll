@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
-import Api from '../api/api';
+import Api from '../../api/api';
 export default class NewReg extends React.Component {
   constructor(props){
     super(props);

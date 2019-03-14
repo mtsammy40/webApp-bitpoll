@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Input, Label, FormGroup, Row, Col} from 'reactstrap';
-import Api from '../api/api';
+import Api from '../../api/api';
 import Moment from 'moment';
 export default class NewElection extends React.Component{
     constructor(props){

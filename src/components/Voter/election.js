@@ -2,10 +2,10 @@ import React from 'react';
 import { Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button, Container, Input, FormGroup, Label, Row, Col,
     Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
-import Dp from '../Images/man.svg';
-import '../App.css';
-import Api from '../api/api';
-import ResultsPie from './charts/electionChart';
+import Dp from '../../Images/man.svg';
+import '../../App.css';
+import Api from '../../api/api';
+import ResultsPie from '../charts/electionChart';
 
 export default class ElectionCard extends React.Component{
     constructor(props){
@@ -23,7 +23,6 @@ export default class ElectionCard extends React.Component{
         this.handleSubmit = this.handleSubmit.bind(this);
         this.toggle = this.toggle.bind(this);
     }
-
     toggle() {
         this.setState(prevState => ({
           modal: !prevState.modal

@@ -6,10 +6,10 @@ import {
     Link,
     Route // for later
   } from 'react-router-dom';
-import Api from '../api/api';
-import '../App.css';
-import Dp from '../Images/man.svg';
-import Load from '../Images/load.gif';
+import Api from '../../api/api';
+import '../../App.css';
+import Dp from '../../Images/man.svg';
+import Load from '../../Images/load.gif';
 import {Pie} from 'react-chartjs-2';
 import UpdateForm from './update';
 import NewReg from './newReg';
@@ -17,8 +17,8 @@ import NewAdmin from './newAdmin';
 import NewElection from './newElection';
 import NewVoter from './newVoter';
 import PendingAdmin from './pendingAdmins';
-import angel from '../api/angel';
-import MyAdmins from './myAdmins'
+import angel from '../../api/angel';
+import MyAdmins from './myAdmins';
 
 export default class IDashboard extends React.Component{
     constructor(props){
@@ -48,7 +48,6 @@ export default class IDashboard extends React.Component{
         this.toggleSuccessModal = this.toggleSuccessModal.bind(this);
         this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     }
-
     toggle() {
         this.setState(prevState => ({
           modal: !prevState.modal
@@ -146,7 +145,6 @@ export default class IDashboard extends React.Component{
             console.log('error in delete admin', e);
         });
     }
-    
     componentWillMount(){
         this.fetchPAdmins();
         this.fetchAdmins();
@@ -694,7 +692,7 @@ export default class IDashboard extends React.Component{
                     </Col>
                 </Row>
                 <Row>
-                    <PendingAdmin onSuccess={this.fetchAdmins} pendingAdmins={this.state.pendingAdmins}></PendingAdmin>
+                    <PendingAdmin onSuccess={()=>this.fetchAdmins} updatePAdmins={this.fetchPAdmins} pendingAdmins={this.state.pendingAdmins}></PendingAdmin>
                 </Row>
                 <Row>
                     <Col md={{size: 12}} >

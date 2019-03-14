@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Modal, ModalBody, ModalFooter, ModalHeader, Table, Button, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap';
-import load from '../Images/load.gif';
+import load from '../../Images/load.gif';
 export default class MyAdmins extends React.Component{
     constructor(props){
         super(props);

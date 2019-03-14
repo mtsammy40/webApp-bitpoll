@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, CardImg, CardTitle, CardText, CardColumns,
  CardSubtitle, CardBody, CardFooter, Container, Badge, ListGroup, ListGroupItem } from 'reactstrap';
-import Api from '../api/api';
+import Api from '../../api/api';
 
 export default class Feed extends React.Component{
     constructor(props){

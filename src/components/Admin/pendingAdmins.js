@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Row, Col, Card, CardTitle, Button, CardBody, Container} from 'reactstrap';
-import Api from '../api/api';
-import angel from '../api/angel';
+import Api from '../../api/api';
+import angel from '../../api/angel';
 
 export default class PendingAdmin extends React.Component{
     constructor(props){
@@ -16,18 +16,14 @@ export default class PendingAdmin extends React.Component{
         delete approved._v;
         delete approved.approved;
         Api.post('org.bitpoll.net.Admin', approved, {withCredentials: true}).then(res=>{
-            var oldpendingAdmins = this.state.pendingAdmins;
-            var pendingAdmins = oldpendingAdmins.filter((p, i, ar)=>{
-                return p.id !== approved.id;
-            });
-            this.setState({ pendingAdmins });
+            this.props.updatePAdmins();
             return approved;
         }).then((approved)=>{
             var issuee = {
                 participant: 'resource:org.bitpoll.net.Admin#'+ approved.id,
                 userID: approved.id,
                 options: {"issuer" : true}
-            }
+            };
             Api.post('system/identities/issue', issuee, {withCredentials: true, responseType: 'blob'}).then((res)=>{
                 console.log('my file', res);
                 var data = new FormData();

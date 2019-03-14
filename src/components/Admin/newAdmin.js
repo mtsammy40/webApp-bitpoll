@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
-import Api from '../api/api';
-import Angel from '../api/angel';
+import Api from '../../api/api';
+import Angel from '../../api/angel';
 export default class NewAdmin extends React.Component {
   constructor(props){
     super(props);
@@ -53,7 +53,8 @@ export default class NewAdmin extends React.Component {
         console.log(error.response);
     }); */
     Angel.post('NewPendingAdmin/', this.state).then(res=>{
-      if(res.statusCode === '200'){
+      console.log('res data', res.status);
+      if(res.status === 200){
         alert('successful');
         this.props.onSuccess();
       } 

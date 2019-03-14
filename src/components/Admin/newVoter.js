@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container } from 'reactstrap';
-import Api from '../api/api';
+import Api from '../../api/api';
 
 export default class NewVoter extends React.Component {
   constructor(props){
@@ -50,7 +50,6 @@ export default class NewVoter extends React.Component {
     }
     return (
       <Container>
-        <h2> New Administrator</h2>
         <Form onSubmit={this.handleSubmit}>
           <Row form>
             <Col md={6}>

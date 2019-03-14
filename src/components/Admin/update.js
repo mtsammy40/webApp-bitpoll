@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, FormGroup, Label, Input, Row, Col, Card, CardBody } from "reactstrap";
-import Api from '../api/api';
-import '../App.css';
+import Api from '../../api/api';
+import '../../App.css';
 
 export default class UpdateForm extends React.Component{
     constructor(props){

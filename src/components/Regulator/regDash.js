@@ -6,13 +6,13 @@ import {
     Link,
     Route // for later
   } from 'react-router-dom';
-import Api from '../api/api';
-import '../App.css';
-import Dp from '../Images/man.svg';
-import Load from '../Images/load.gif';
+import Api from '../../api/api';
+import '../../App.css';
+import Dp from '../../Images/man.svg';
+import Load from '../../Images/load.gif';
 import {Pie} from 'react-chartjs-2';
-import UpdateForm from './update';
-import NewReg from './newReg';
+import UpdateForm from '../Admin/update';
+import NewReg from '../Admin/newReg';
 
 export default class RegDash extends React.Component{
     constructor(props){

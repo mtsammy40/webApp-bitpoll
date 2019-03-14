@@ -1,9 +1,9 @@
 import React from 'react';
 import {Row, Container, Col, Card, CardBody, CardImg, CardTitle, CardText, Table} from 'reactstrap';
 import { Pie } from 'react-chartjs-2';
-import Api from '../api/api';
-import '../App.css';
-import Dp from '../Images/man.svg';
+import Api from '../../api/api';
+import '../../App.css';
+import Dp from '../../Images/man.svg';
 
 export default class IDStats extends React.Component{
     constructor(props){
