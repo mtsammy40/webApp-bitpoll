@@ -160,11 +160,13 @@ export default class IDashboard extends React.Component{
         this.fetchElecs();
         this.fetchInsts();
         this.fetchCountries();
-        this.ws = new WebSocket('ws://35.202.24.146:80/');
+    }
+    componentDidMount(){
+        this.ws = new WebSocket('ws://35.202.24.146/');
         this.ws.onopen = ()=>{
         console.log('WebSockets is a go-go-go');
+        }
     }
-}
     componentWillReceiveProps(){
         this.ws.onmessage = (e)=> {
             const event = JSON.parse(e.data);

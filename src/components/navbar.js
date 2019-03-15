@@ -55,7 +55,7 @@ export default class Navigation extends React.Component {
     
     return (
       <div>
-        <Navbar color="light" light expand="md">
+        <Navbar color="light" light expand="md" className="zindex">
           <NavbarBrand href="/">Bitpoll</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>

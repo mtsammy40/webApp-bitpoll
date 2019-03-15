@@ -28,7 +28,7 @@ export default class CandidateChart extends React.Component{
             this.props.toggleRefetch();
         }
         const MChart = (props)=>{   
-            if(this.state.electionData){
+            if(this.state.electionData && props.candidates){
                 var candidates=[]
                 var cdata = this.state.electionData.mChart;
                 console.log('ddata labels length', cdata.labels.length);
