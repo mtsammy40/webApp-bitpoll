@@ -204,18 +204,10 @@ export default class IDashboard extends React.Component{
         return this.state.candidates;
     }
     render(){
-        
-        let institList = this.state.Admins.map(Admin => <CardText key={Admin.Id}>{Admin.name}</CardText>)
-        let myDetails = this.state.Admins;
+        let myDetails = this.props.profile;
         let countriesList = [];
         let Insts;
         let myAdmin = {'id': 'default'};
-        if(!this.state.Admins){
-            myAdmin={'id': 'default'};
-        } else {
-            myAdmin = this.state.Admins[0];
-        }
-
         if(!this.state.Insts){
             Insts = ["none"];
         } else {
@@ -227,7 +219,7 @@ export default class IDashboard extends React.Component{
             countriesList = this.state.countries.map((c, i) => <option key={i}>{c.name}</option>);
           }
         let InfoCard;
-        if(myDetails.length === 0){
+        if(!myDetails){
              InfoCard = () => {
                 return <tr><img src={Load} alt="loading..."></img></tr>
             }
@@ -237,11 +229,11 @@ export default class IDashboard extends React.Component{
                 <div>
                     <Table responsive>
                         <tbody>
-                            <tr><td>name: </td><td> {myDetails[0].name}</td></tr>
-                            <tr><td>ID: </td><td> {myDetails[0].id}</td></tr>
-                            <tr><td>Nationality: </td><td> {myDetails[0].nationality}</td></tr>
-                            <tr><td>Email: </td><td> {myDetails[0].email}</td></tr>
-                            <tr><td>Gender: </td><td> {myDetails[0].gender}</td></tr>
+                            <tr><td>name: </td><td> {myDetails.name}</td></tr>
+                            <tr><td>ID: </td><td> {myDetails.id}</td></tr>
+                            <tr><td>Nationality: </td><td> {myDetails.nationality}</td></tr>
+                            <tr><td>Email: </td><td> {myDetails.email}</td></tr>
+                            <tr><td>Gender: </td><td> {myDetails.gender}</td></tr>
                         </tbody>
                     </Table>
                     <Button color="danger" onClick={this.toggleUpdateProfile}>Update</Button>
@@ -249,7 +241,7 @@ export default class IDashboard extends React.Component{
         <Modal isOpen={this.state.UpdateProfileModal} toggle={this.toggleUpdateProfile} className={this.props.className}>
           <ModalHeader toggle={this.toggleUpdateProfile}>Modal title</ModalHeader>
           <ModalBody>
-              <UpdateForm profile={this.state.Admins[0]}></UpdateForm>
+              <UpdateForm profile={myDetails}></UpdateForm>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>{' '}

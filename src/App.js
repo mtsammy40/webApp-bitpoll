@@ -87,6 +87,8 @@ class App extends Component {
       var type = types.splice(-1, 1);
       var rtype = type[0].split('#');
       console.log('type', rtype[0]);
+      var typist = rtype[0];
+      this.setState({typist});
       if(rtype[0] === "NetworkAdmin"){
         var profile = {
           $class : rtype[0],
@@ -98,8 +100,7 @@ class App extends Component {
         this.setState({ profile });
       } else {
         Api.get('org.bitpoll.net.'+rtype[0]+'/'+id, {withCredentials: true}).then(res=>{
-          var profile = res.data;
-          this.setState({ profile });
+          this.setState({ profile : res.data });
         }).catch(err=>{
           console.log('getting profile err', err);
         });
@@ -109,10 +110,15 @@ class App extends Component {
         console.log('no participant');
       }
     }).catch(err=>{
-      console.log('error pinging', err);
-      if(err.message.indexOf('A business network card has not been specified')!==1){
+      console.log('error pinging', err.response.status);
+      if(err.response.status === 500 && err.response.data.error.message.indexOf('A business network card has not been specified')!== -1){
+        console.log('res 500');
         var noCard = false;
         this.setState({ noCard });
+        this.setState({ authorized: true});
+      } else if(err.response.status === 401){
+        console.log('Not logged in', err.response.status);
+        this.setState({ authorized: false});
       }
     })
   }
@@ -121,27 +127,30 @@ class App extends Component {
    }
   render() {
     console.log('mother state', this.state);
+    if(this.state.authorized){
+      console.log('auth?', this.state.authorized); 
+    }
     return (
       <Router>
       <div>
-        <Navigation></Navigation>
+        <Navigation profile={this.state.profile}></Navigation>
         <div>
           <Switch>
             <Route exact path="/" component={Header} />
             <Route exact path="/Feed" component={Feed} />
             <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>
-            <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} profile={this.state.profile}/>}  />
+            <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} authorized={this.state.authorized} profile={this.state.profile}/>}  />
             <Route path="/Dashboard" component={Dashboard} />
             <Route path="/newAdmin" component={newAdmin} />
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
-            <Route path="/LoggingIn" render={(props)=><CheckLogin {...props} profile={this.state.profile}/>} />
+            <Route path="/LoggingIn" render={(props)=><CheckLogin {...props} authorized={this.state.authorized} profile={this.state.profile}/>} />
             <Route path="/modal/" component={Modaly} />
             <Route path="/IDashboard" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
-            <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} profile={this.state.profile}/>} />
+            <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} type={this.state.typist} profile={this.state.profile}/>} />
             <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
             <Route path="/VoterProfile" render={(props)=><VoterProfile {...props} profile={this.state.profile} />} />
-            <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} elections={this.state.elections}/>} />
+            <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} profile={this.state.profile} elections={this.state.elections}/>} />
           </Switch>
         </div>
       </div>

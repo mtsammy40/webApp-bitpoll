@@ -10,7 +10,8 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem } from 'reactstrap';
+  DropdownItem,
+  Button } from 'reactstrap';
 
 export default class Navigation extends React.Component {
   constructor(props) {
@@ -26,7 +27,32 @@ export default class Navigation extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+  
   render() {
+    const Profile = () =>{
+      if(!this.props.profile){
+        return <Button href="/SignIn" outline color="success">Sign In</Button>
+      } else {
+        return <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                    Profile
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                    <NavLink href="/Profile">{this.props.profile.email}</NavLink>
+                    </DropdownItem>
+                    <DropdownItem>
+                      <Button outline block color="secondary" onClick="http://35.202.24.146:3002/auth/logout">Log Out</Button>
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem>
+                      Reset
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+      }
+    }
+    
     return (
       <div>
         <Navbar color="light" light expand="md">
@@ -55,24 +81,7 @@ export default class Navigation extends React.Component {
               <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>
               </NavItem>
-              
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Email
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                  <NavLink href="/Profile">My Profile</NavLink>
-                  </DropdownItem>
-                  <DropdownItem>
-                    Log Out
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    Reset
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
+              <Profile></Profile>
             </Nav>
           </Collapse>
         </Navbar>

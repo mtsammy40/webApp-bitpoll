@@ -6,6 +6,7 @@ import Dp from '../../Images/man.svg';
 import '../../App.css';
 import Api from '../../api/api';
 import ResultsPie from '../charts/electionChart';
+import angel from '../../api/angel';
 
 export default class ElectionCard extends React.Component{
     constructor(props){
@@ -43,12 +44,28 @@ export default class ElectionCard extends React.Component{
             } else {
                 alert(res.data);
             }
-            
+            return vote;
+        }).then(res=>{
+            var vote = {
+                election: res.election,
+                candidate: res.candidate,
+                gender: this.props.profile.gender,
+                age: 20,
+                county: this.props.profile.county,
+                candidateNo: this.state.election.candidates.length 
+            }
+            angel.post('newVote', vote).then(()=>{
+                console.log('success', vote);
+            }).catch(err=>{
+                console.log('err sending voter data', err);
+            });
         }).catch(e=>{
             if(e  === null){
                 alert('Connection to server has been lost, please check that you are connected');
             } else {
-                alert(e.response);
+                console.log('errrrr', e)
+                alert(e);
+
             }
            
         })

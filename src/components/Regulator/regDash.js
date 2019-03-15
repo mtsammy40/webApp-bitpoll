@@ -108,16 +108,15 @@ export default class RegDash extends React.Component{
         return this.state.candidates;
     }
     render(){
-        let institList = this.state.Admins.map(Admin => <CardText key={Admin.Id}>{Admin.name}</CardText>)
-        let myDetails = this.state.Admins;
+        let myDetails = this.props.profile;
         let countriesList = [];
         if(!this.state.countries){
-            countriesList=["Kenya"];
+            countriesList=[<option>Kenya</option>];
           } else {
             countriesList = this.state.countries.map((c, i) => <option key={i}>{c.name}</option>);
           }
         let InfoCard;
-        if(myDetails.length === 0){
+        if(!myDetails){
              InfoCard = () => {
                 return <tr><img src={Load} alt="loading..."></img></tr>
             }
@@ -127,14 +126,12 @@ export default class RegDash extends React.Component{
                 <div>
                     <Table responsive>
                         <tbody>
-                            <tr><td>name: </td><td> {myDetails[0].name}</td></tr>
-                            <tr><td>ID: </td><td> {myDetails[0].id}</td></tr>
-                            <tr><td>Nationality: </td><td> {myDetails[0].nationality}</td></tr>
-                            <tr><td>Email: </td><td> {myDetails[0].email}</td></tr>
-                            <tr><td>Gender: </td><td> {myDetails[0].gender}</td></tr>
+                            <tr><td>name: </td><td> {myDetails.name}</td></tr>
+                            <tr><td>ID: </td><td> {myDetails.id}</td></tr>
+                            <tr><td>Email: </td><td> {myDetails.email}</td></tr>
                         </tbody>
                     </Table>
-                    <a href={`${this.props.match.url}/UpdateProfile`} className="btn btn-success">Update</a>
+                    <a href={`${this.props.match.url}UpdateProfile/`} className="btn btn-success">Update</a>
                 </div>
                 return infotable;
             }
@@ -172,11 +169,11 @@ export default class RegDash extends React.Component{
                     </Table>;
             }
         }
-        const Upform = () =>{
-            if(!this.state.Admins[0]){
+        const Upform = (props) =>{
+            if(!this.props.profile){
                 return <img src={Load} alt="loading..." width={400} height={400}></img>
             } else {
-                return <UpdateForm profile={this.state.Admins[0]}></UpdateForm>
+                return <UpdateForm profile={props.profile} type={props.type}></UpdateForm>
             }
         }
         const ActiveElections = () => {
@@ -480,7 +477,7 @@ export default class RegDash extends React.Component{
                                
                                 <CardBody>
                                 <CardTitle><h2>Update Information</h2></CardTitle>
-                                <Upform {...props} profile={this.state.Admins[0]}></Upform>
+                                <Upform {...props} type={this.props.type} profile={this.props.profile}></Upform>
                                 </CardBody>
                                 </Card>
                             </Col>

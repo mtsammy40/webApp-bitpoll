@@ -47,15 +47,13 @@ export default class SignIn extends React.Component{
         }
     }      
     render(){
-        //Check if is logged in .
-
         //!!!REMOVE ! SIGN
         if(this.props.profile){
             switch(this.props.profile.$class){
                 case 'org.bitpoll.net.Admin':
                     return <Redirect to="/IDashboard" />;
                 case 'org.bitpoll.net.Regulator':
-                    return <Redirect to="/RegDashboard" />;
+                    return <Redirect to="/RegulatorDashboard" />;
                 case 'org.bitpoll.net.Voter':
                     return <Redirect to="/VoterProfile" />;
                 case 'NetworkAdmin':
@@ -63,6 +61,10 @@ export default class SignIn extends React.Component{
                     return <Redirect to="/IDashboard" />;
                 default:
             }
+        }
+        if(this.props.authorized){
+            console.log('redirecting to logging');
+           return <Redirect to="/LoggingIn" />
         }
         return(
             <div className="">
@@ -72,7 +74,7 @@ export default class SignIn extends React.Component{
                     <CardBody>
                     <Row>
                         <Col md={12} className="p-2">
-                            <Button block href="http://35.202.24.146:3001/auth/github/">Log In with Github</Button>
+                            <Button block href="http://35.202.24.146:3002/auth/github/">Log In with Github</Button>
                         </Col>
                     </Row>
                     <Row>

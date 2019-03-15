@@ -98,7 +98,7 @@ export default class CheckLogin extends React.Component{
                         case 'org.bitpoll.net.Admin':
                             return <Redirect to="/IDashboard" />;
                         case 'org.bitpoll.net.Regulator':
-                            return <Redirect to="/RegDashboard" />;
+                            return <Redirect to="/RegulatorDashboard" />;
                         case 'org.bitpoll.net.Voter':
                             return <Redirect to="/VoterProfile" />;
                         case 'NetworkAdmin':

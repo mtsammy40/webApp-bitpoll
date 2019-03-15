@@ -62,13 +62,13 @@ export default class UpdateForm extends React.Component{
             <Col md={6}>
               <FormGroup>
                 <Label for="fullnametb">Full Name</Label>
-                <Input type="text" name="name" id="fullnametb" value= {this.state.form.name} placeholder="Please enter full name" onChange={this.handleChange} />
+                <Input type="text" name="name" id="fullnametb" value= {this.props.profile.name} placeholder="Please enter full name" onChange={this.handleChange} />
               </FormGroup>
             </Col>
             <Col md={6}>
               <FormGroup>
                 <Label for="emailtb">Email</Label>
-                <Input type="email" name="email" id="emailtb" placeholder="passomeone@mail.com" value= {this.state.form.email} onChange={this.handleChange} />
+                <Input type="email" name="email" id="emailtb" placeholder="passomeone@mail.com" value= {this.props.profile.email} onChange={this.handleChange} />
               </FormGroup>
             </Col>
           </Row>
@@ -84,7 +84,7 @@ export default class UpdateForm extends React.Component{
             <Col md={3}>
               <FormGroup>
                 <Label for="gendertb">Gender</Label>
-                <Input type="select" name="gender" id="gendertb" value={this.state.form.gender} onChange={this.handleChange}>
+                <Input type="select" name="gender" id="gendertb" value={this.props.profile.gender} onChange={this.handleChange}>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </Input>
@@ -93,7 +93,7 @@ export default class UpdateForm extends React.Component{
             <Col md={6}>
               <FormGroup>
                 <Label for="Date of Birth">Date Of Birth</Label>
-                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" value= {this.state.form.dob} onChange={this.handleChange} />
+                <Input type="date" name="dob" id="bobtb" placeholder="Date of Birth" value= {this.props.profile.dob} onChange={this.handleChange} />
               </FormGroup>
             </Col>
           </Row>
@@ -101,13 +101,13 @@ export default class UpdateForm extends React.Component{
             <Col md={4}>
               <FormGroup>
                 <Label for="countytb">County</Label>
-                <Input type="text" name="county" id="countytb" value= {this.state.form.county} onChange={this.handleChange} required />
+                <Input type="text" name="county" id="countytb" value= {this.props.profile.county} onChange={this.handleChange} required />
               </FormGroup>
             </Col>
             <Col md={4}>
               <FormGroup>
                 <Label for="poboxtb">National ID Number</Label>
-                <Input type="text" name="id" id="idtb" value= {this.state.form.id} onChange={this.handleChange} />
+                <Input type="text" name="id" id="idtb" value= {this.props.profile.id} onChange={this.handleChange} />
               </FormGroup>  
             </Col>
           </Row>
@@ -115,13 +115,13 @@ export default class UpdateForm extends React.Component{
             <Col md={6}>
             <FormGroup>
                 <Label for="dp">Dp</Label>
-                <Input type="text" name="dp" value= {this.state.form.dp} onChange={this.handleChange} />
+                <Input type="text" name="dp" value= {this.props.profile.dp} onChange={this.handleChange} />
               </FormGroup>
             </Col>
             <Col md={6}>
             <FormGroup>
                 <Label for="dp">Phone Number</Label>
-                <Input type="text" name="phoneNo" value= {this.state.form.phoneNo} onChange={this.handleChange} />
+                <Input type="text" name="phoneNo" value= {this.props.profile.phoneNo} onChange={this.handleChange} />
               </FormGroup>
             </Col>
           </Row>         

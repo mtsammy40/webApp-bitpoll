@@ -2,6 +2,7 @@ import React from 'react';
 import {Container, Input, Label, FormGroup, Row, Col} from 'reactstrap';
 import Api from '../../api/api';
 import Moment from 'moment';
+import angel from '../../api/angel';
 export default class NewElection extends React.Component{
     constructor(props){
         super(props);
@@ -49,6 +50,7 @@ export default class NewElection extends React.Component{
         console.log('state', this.state);
         Api.post('org.bitpoll.net.CreateElection', this.state, { withCredentials: true}).then(res => {
             alert('successfully set: '+ res.data.motion);
+            return res.data;
         }).catch(error=> {
             console.log('error', error)
             if(error.response.code){
