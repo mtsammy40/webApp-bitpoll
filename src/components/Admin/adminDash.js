@@ -19,6 +19,7 @@ import NewVoter from './newVoter';
 import PendingAdmin from './pendingAdmins';
 import angel from '../../api/angel';
 import MyAdmins from './myAdmins';
+import CandidateChart from '../candidateChart';
 
 export default class IDashboard extends React.Component{
     constructor(props){
@@ -47,6 +48,12 @@ export default class IDashboard extends React.Component{
         this.toggleUpdateProfile = this.toggleUpdateProfile.bind(this);
         this.toggleSuccessModal = this.toggleSuccessModal.bind(this);
         this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+        this.toggleRefetch = this.toggleRefetch.bind(this);
+    }
+    toggleRefetch(){
+        this.setState(prev=>({
+            reFetch: !prev.reFetch
+        }));
     }
     toggle() {
         this.setState(prevState => ({
@@ -153,8 +160,33 @@ export default class IDashboard extends React.Component{
         this.fetchElecs();
         this.fetchInsts();
         this.fetchCountries();
+        this.ws = new WebSocket('ws://35.202.24.146:80/');
+        this.ws.onopen = ()=>{
+        console.log('WebSockets is a go-go-go');
     }
-    
+}
+    componentWillReceiveProps(){
+        this.ws.onmessage = (e)=> {
+            const event = JSON.parse(e.data);
+            var candidate = event.candidate;
+            var election = this.state.Elections.find(er=>{
+               return er.candidates.indexOf(candidate) > -1;
+            });
+            console.log('Got the election', election);
+            var electionIndex = this.state.Elections.indexOf(election);
+            var candidateName = this.state.candidates.find(cand =>  cand.candidateId === candidate.split('#').pop());
+            console.log('candidate name', candidateName );
+            var index = this.state.chartData.labels.indexOf(candidateName.name);
+            console.log('Cand index ', index );
+            var chartData = this.state.chartData[electionIndex];
+            console.log('to change', chartData.datasets[0].data[index]);
+            chartData.datasets[0].data[index] = event.count;
+            this.setState({ chartData });
+            console.log("chart done", this.state.chartData);
+            this.setState({ reFetch: true });
+        }
+    }
+
     getCandidates(){
         let chartData = [];
         for(var j = 0; j<this.state.Elections.length; j++){
@@ -346,13 +378,22 @@ export default class IDashboard extends React.Component{
         const ActiveElections = () => {
             if(this.state.chartData){
                 console.log('chartData', this.state.chartData);
-                const AE = this.state.chartData.map((c, i) => <Container className="shadow mt" key={i}>
-                <h2>{c.datasets[0].label}</h2>
+               
+                const AE = this.state.chartData.map((c, i) =>{
+                    var election = this.state.Elections.filter(e=>{
+                        return e.motion === c.datasets[0].label;
+                    });
+                    var color = "rgba(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + "), 0.3";
+                    console.log('election in active elections ', election[0]);
+                 return <Card className="shadow mt" style={{backgroundColor: color}} key={i}>
+                 <CardTitle>
+                 <h2>{c.datasets[0].label}</h2>
+                 </CardTitle>
                 <Row>
-                    <Col md={8}>
+                    <Col md={6}>
                         <Pie data={c} options={this.state.chartOptions}></Pie> 
                     </Col>
-                    <Col md={4}>
+                    <Col md={6}>
                         <Table responsive>
                             <tr><td>Motion: </td><td>{c.datasets[0].label}</td></tr>
                             <tr><td>Candidates: </td><td>{c.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
@@ -360,7 +401,12 @@ export default class IDashboard extends React.Component{
                         </Table>
                     </Col>
                 </Row> 
-            </Container>);
+                <Row>
+                    <Col sm={12}>
+                    <CandidateChart candidates={this.state.candidates} refetch={this.state.reFetch} toggleRefetch={this.toggleRefetch} election={election[0].electionId}></CandidateChart>
+                    </Col>
+                </Row>   
+                </Card>});
             return AE;   
             } else {
             return <p>No active elections to show</p>  

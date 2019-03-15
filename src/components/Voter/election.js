@@ -23,6 +23,7 @@ export default class ElectionCard extends React.Component{
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.toggle = this.toggle.bind(this);
+  
     }
     toggle() {
         this.setState(prevState => ({
@@ -52,7 +53,7 @@ export default class ElectionCard extends React.Component{
                 gender: this.props.profile.gender,
                 age: 20,
                 county: this.props.profile.county,
-                candidateNo: this.state.election.candidates.length 
+                candidates: this.state.election.candidates 
             }
             angel.post('newVote', vote).then(()=>{
                 console.log('success', vote);
@@ -113,7 +114,7 @@ export default class ElectionCard extends React.Component{
             }
            
         });
-        this.ws = new WebSocket('ws://localhost:3000/');
+        this.ws = new WebSocket('ws://35.202.24.146:80/');
         this.ws.onopen = ()=>{
             console.log('WebSockets is a go-go-go');
         }

@@ -40,8 +40,9 @@ export default class CheckLogin extends React.Component{
                     alert('Validity Verified');
                 }
             }).catch(err=>{
-                console.log('err with card', err.response);
-                if(err.response.data.error.message.indexOf('Error trying to enroll user')!== -1){
+                console.log('err with card');
+                if(err.response && err.response.data.error.message.indexOf('Error trying to enroll user')!== -1){
+                    console.log('err with card', err.response);
                     alert('There is an error with your card! Are you sure it is valid?\n You can try redownloading it from the email');
                     apis.delete('wallet/'+this.state.file.name).then(res=>{
                         console.log('deleted bad card');
@@ -51,8 +52,9 @@ export default class CheckLogin extends React.Component{
                 }  
             });
         }).catch(err=>{
-            console.log('err uploading card', err.response.data.error.message);
-            if(err.response.data.error.message.indexOf('is this a zip file')!== -1){
+            console.log('err uploading card');
+            if(err.response && err.response.data.error.message.indexOf('is this a zip file')!== -1){
+                console.log('err uploading card', err.response.data.error.message);
                 alert('There is an error with your card! It seems to be corrupt. Please try redownloading it');
             }  
         });
@@ -67,15 +69,16 @@ export default class CheckLogin extends React.Component{
             this.setState({ noCard });
            }
         }).catch(err=>{
-            console.log('error pinging', err.response);
-            if(err.response.status === 500){
+            console.log('error pinging');
+            if(err.response && err.response.status && err.response.status === 500){
+                console.log('error pinging', err.response);
                 //message.indexOf('A business network card has not been specified')!== -1
                 console.log('as expected');
                 var noCard = true;
                 this.setState({ noCard });
                 alert('Please upload an identity!');
                 console.log('as expected');
-              } else if (err.response.status === 401){
+              } else if (err.response && err.response.status === 401){
                 var authorized = false;
                 this.setState({ authorized });
                 alert('please Log in');

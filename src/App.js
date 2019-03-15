@@ -110,13 +110,13 @@ class App extends Component {
         console.log('no participant');
       }
     }).catch(err=>{
-      console.log('error pinging', err.response.status);
-      if(err.response.status === 500 && err.response.data.error.message.indexOf('A business network card has not been specified')!== -1){
-        console.log('res 500');
+      console.log('error pinging');
+      if(err.response && err.response.status === 500 && err.response.data.error.message.indexOf('A business network card has not been specified')!== -1){
+        console.log('res 500', err.response.status);
         var noCard = false;
         this.setState({ noCard });
         this.setState({ authorized: true});
-      } else if(err.response.status === 401){
+      } else if(err.response && err.response.status === 401){
         console.log('Not logged in', err.response.status);
         this.setState({ authorized: false});
       }
