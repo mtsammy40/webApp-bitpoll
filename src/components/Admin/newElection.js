@@ -50,6 +50,7 @@ export default class NewElection extends React.Component{
         console.log('state', this.state);
         Api.post('org.bitpoll.net.CreateElection', this.state, { withCredentials: true}).then(res => {
             alert('successfully set: '+ res.data.motion);
+            this.props.fetchElections();
             return res.data;
         }).catch(error=> {
             console.log('error', error)
@@ -103,13 +104,13 @@ export default class NewElection extends React.Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={3}>
+                        <Col md={6}>
                         <FormGroup>
                             <Label id="cand_notb">No. of Candidates</Label>
                             <Input type="number" name="cand_no" id="cand_notb" min={2} placeholder="No. of Candidates" onChange={this.handleChange} required />
                         </FormGroup>
                         </Col>
-                        <Col md={3}>
+                        <Col md={6} >
                             <FormGroup>
                                 <Label>Number of Ballots</Label>
                                 <Input type="number" name="ballotNo" placeholder="No. of Ballots" min={3} onChange={this.handleChange} required />

@@ -20,7 +20,7 @@ import PendingAdmin from './pendingAdmins';
 import angel from '../../api/angel';
 import MyAdmins from './myAdmins';
 import CandidateChart from '../candidateChart';
-
+import PdfView from './pdf';
 export default class IDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -30,6 +30,7 @@ export default class IDashboard extends React.Component{
             Admins: [],
             Elections: [],
             modal: false,
+            pdfmodal: false,
             DeleteModal: false,
             UpdateProfileModal: false,
             UpdateProfile: {},
@@ -49,16 +50,27 @@ export default class IDashboard extends React.Component{
         this.toggleSuccessModal = this.toggleSuccessModal.bind(this);
         this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
         this.toggleRefetch = this.toggleRefetch.bind(this);
+        this.getCandidatesByElection = this.getCandidatesByElection.bind(this);
+        this.getChartData = this.getChartData.bind(this);
+        this.pdftoggle = this.pdftoggle.bind(this);
     }
     toggleRefetch(){
         this.setState(prev=>({
             reFetch: !prev.reFetch
         }));
     }
+    pdftoggle(){
+        this.setState(prev=>({
+            pdfmodal: !prev.pdfmodal
+        }));
+    }
     toggle() {
         this.setState(prevState => ({
           modal: !prevState.modal
         }));
+        if(!this.state.modal){
+            delete this.state.ViewCands;
+        }
     }
     toggleUpdateProfile(){
         this.setState(prevState => ({
@@ -160,6 +172,7 @@ export default class IDashboard extends React.Component{
         this.fetchElecs();
         this.fetchInsts();
         this.fetchCountries();
+        this.getCandidates();
         this.ws = new WebSocket('ws://35.202.24.146:80/');
         this.ws.onopen = ()=>{
         console.log('WebSockets is a go-go-go');
@@ -186,54 +199,80 @@ export default class IDashboard extends React.Component{
             this.setState({ reFetch: true });
         }
     }
-
+    getChartData(){
+        var AE = [];
+        console.log('starting chartdata');
+        console.log('starting chartdata', this.state.Elections);
+        this.state.Elections.forEach((election=>{
+            var candidatesArr=[];
+            var dataArr = [];
+            var labelsArr = [];
+            var backgroundColors =[];
+            election.candidates.forEach(cand=>{
+                var candidates = this.state.candidates.find(c=>{
+                    return c.candidateId === cand.split('#').pop();
+                });
+                candidatesArr.push(candidates);   
+            });
+            console.log('gcd candidate details', candidatesArr);
+            candidatesArr.forEach(ca=>{
+                labelsArr.push(ca.name);
+                dataArr.push(ca.count);
+                backgroundColors.push("rgb(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + ")");
+            });              
+                var Cdata ={
+                    "labels": labelsArr,
+                    "datasets": [{
+                        "label": election.motion,
+                        "data" : dataArr,
+                        "backgroundColor": backgroundColors
+                    }]                
+                  };
+                  var ElecStats ={
+                      electionId: election.electionId,
+                      chart: Cdata
+                  };
+            AE.push(ElecStats);
+        }));
+        this.setState({AE});
+    }
     getCandidates(){
-        let chartData = [];
         for(var j = 0; j<this.state.Elections.length; j++){
-            var candidates; const labels=[]; const data=[]; const backgroundColors=[]; var f = 0;
+            var candidates; var data=[]; var labels = []; var backgroundColors=[];
             for(var i=0; i<this.state.Elections[j].candidates.length; i++){
                 Api.get('org.bitpoll.net.Candidate#'+ this.state.Elections[j].candidates[i].split('#').pop(), {withCredentials: true})
                 // eslint-disable-next-line no-loop-func
                 .then((cand)=>{
-                    candidates= cand.data;
-                    labels.push(cand.data[f].name);
-                    data.push(cand.data[f].count);//for chart
+                    candidates = cand.data;
                     this.setState({ candidates });
-                    var dynamicColors = "rgb(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + ")";
-                    backgroundColors.push(dynamicColors);
-                    console.log('tumefika hapa', candidates);
-                    f++;
+                    console.log('candidates', this.state.candidates);
+                }).then(()=>{
+                    this.getChartData();
                 }).catch(e=>{
                     console.log('cand fetch error', e);
                 });  
-                
-            }
-            var Cdata ={
-                "labels": labels,
-                "datasets": [{
-                    "label": this.state.Elections[j].motion,
-                    "data" : data,
-                    "backgroundColor": backgroundColors
-                }]                
+            }      
             };
-            chartData.push(Cdata); 
-            
         }
-        
-        /* var chartData = {
-            "labels": labels,
-            "datasets": [{
-                "label": this.state.Elections[0].motion,
-                "data" : data,
-                "backgroundColor": backgroundColors
-            }]                
-        }; */
-        var chartOptions = {
-                "backgroundColor": "#ff4455" 
-        }
-        console.log('candidates.getcand', candidates);
-        this.setState({ chartData, chartOptions });
-        return this.state.candidates;
+    getCandidatesByElection(electionId){
+        let mycandidates=[];
+            let election = this.state.Elections.find((e)=>{
+                return e.electionId === electionId;
+            });
+            console.log('okay elec '+electionId, election);
+            election.candidates.forEach((c)=>{
+                let candidate = this.state.candidates.find((cand)=>{
+                    return cand.candidateId === c.split('#').pop();
+                });
+                mycandidates.push(candidate); 
+            });
+            console.log('okay candidates', mycandidates);
+            const ViewCands = {
+                election: election.motion,
+                candidates: mycandidates
+            }
+            this.setState({ ViewCands });
+            this.toggle();
     }
     render(){
         let myDetails = this.props.profile;
@@ -253,7 +292,7 @@ export default class IDashboard extends React.Component{
         let InfoCard;
         if(!myDetails){
              InfoCard = () => {
-                return <tr><img src={Load} alt="loading..."></img></tr>
+                return <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
             }
         } else {
             InfoCard = (props) =>{
@@ -285,6 +324,14 @@ export default class IDashboard extends React.Component{
                 return infotable;
             }
         }
+        if(this.props.profile){
+            var profs = this.props.profile;
+        } else {
+            var profs = 'Institution....';
+        }
+       /*  if(this.state.candidates && this.state.Elections){
+            this.getChartData();
+        } */
         // Functional Components
         const VotersPage = (props)=>{
             if(!this.state.Voters){
@@ -322,17 +369,31 @@ export default class IDashboard extends React.Component{
                                                 </tbody>
                                                 <tr></tr>
                                             </Table>
+                                            <Button outline block color="primary" onClick={this.pdftoggle}>PDF</Button>
+                                    <PdfComp title={"Voters List"} for={profs.name}><Table responsive>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Id</th>
+                                                    <th>Date of Birth</th>
+                                                </tr>
+                                                <tbody>
+                                                    {votersList}
+                                                </tbody>
+                                                <tr></tr>
+                                            </Table></PdfComp>
                                         </Row>
                                     </CardBody>
                                 </Card>
                             </Col>
                         </Row>
+
                 </Container>
             }
         }
         const GetData = (props)=>{
             if(!this.state.Voters || !this.state.Regs){
-                return <img src={Load} alt="Loading..."></img>
+                return <img src={Load} alt="Loading..." height="50px"></img>
             } else {
                 switch(props.part){
                     case 'voter':
@@ -352,7 +413,7 @@ export default class IDashboard extends React.Component{
         
         const MyRegs= ()=>{
             if(!this.state.Regs){
-                return <img src={Load} alt="Loading Regulators"></img>
+                return <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
             } else {
                 var Regslist = this.state.Regs.map(R =>       
                     <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary">Edit</button></td><td><button className="btn btn-danger">Remove</button></td></tr>
@@ -370,65 +431,46 @@ export default class IDashboard extends React.Component{
         }
         const Upform = () =>{
             if(!this.state.Admins[0]){
-                return <img src={Load} alt="loading..." width={400} height={400}></img>
+                return <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
             } else {
                 return <UpdateForm profile={this.state.Admins[0]}></UpdateForm>
             }
         }
         const ActiveElections = () => {
-            if(this.state.chartData){
-                console.log('chartData', this.state.chartData);
-               
-                const AE = this.state.chartData.map((c, i) =>{
-                    var election = this.state.Elections.filter(e=>{
-                        return e.motion === c.datasets[0].label;
-                    });
-                    var color = "rgba(" +Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255)+ "," + Math.floor(Math.random() * 255) + "), 0.3";
-                    console.log('election in active elections ', election[0]);
-                 return <Card className="shadow mt" style={{backgroundColor: color}} key={i}>
+            if(this.state.AE){
+                console.log('starting AE', this.state.AE);
+                var active = this.state.AE.map((c, i)=>{
+                    return <Card className="shadow mt" key={i}>
                  <CardTitle>
-                 <h2>{c.datasets[0].label}</h2>
+                 <h2>{c.chart.datasets[0].label}</h2>
                  </CardTitle>
                 <Row>
                     <Col md={6}>
-                        <Pie data={c} options={this.state.chartOptions}></Pie> 
+                        <Pie data={c.chart} options={this.state.chartOptions}></Pie> 
                     </Col>
                     <Col md={6}>
                         <Table responsive>
-                            <tr><td>Motion: </td><td>{c.datasets[0].label}</td></tr>
-                            <tr><td>Candidates: </td><td>{c.labels.map((l, i) => <tr key={i}><td>{l}</td></tr>)}</td></tr>
-                            <tr><td>Total Votes: </td><td>{c.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
+                            <tr><td>Motion: </td><td>{c.chart.datasets[0].label}</td></tr>
+                            <tr><td>Candidates: </td><td>{c.chart.labels.map((l, i) => <tr key={i}><td>{l}</td><td>{c.chart.datasets[0].data[i]}</td></tr>)}</td></tr>
+                            <tr><td>Total Votes: </td><td>{c.chart.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
                         </Table>
                     </Col>
                 </Row> 
                 <Row>
                     <Col sm={12}>
-                    <CandidateChart candidates={this.state.candidates} refetch={this.state.reFetch} toggleRefetch={this.toggleRefetch} election={election[0].electionId}></CandidateChart>
+                        <CandidateChart candidates={this.state.candidates} refetch={this.state.reFetch} toggleRefetch={this.toggleRefetch} election={c.electionId}></CandidateChart>
                     </Col>
                 </Row>   
-                </Card>});
-            return AE;   
-            } else {
-            return <p>No active elections to show</p>  
-            }
-        }
-        const ViewCandidates = (props) =>{
-            if(!this.state.candidates){
-                return <div>Loading...</div>
-            } else {
-            let mycandidates=[];
-            let election = this.state.Elections.find((e)=>{
-                return e.electionId === props.elec;
-            });
-            console.log('okay elec', election);
-            election.candidates.forEach((c)=>{
-                let candidate = this.state.candidates.find((cand)=>{
-                    return cand.candidateId === c.split('#').pop();
+                </Card>
                 });
-                mycandidates.push(candidate); 
-            });
-            console.log('okay candidates', mycandidates);
-            let candidates = mycandidates.map(e=><Card className="shadow mt">
+                return active;
+                } else {
+                    return <p>No active elections to show</p>  
+                }
+            }
+        const ViewCandidates = (props) =>{
+                if(this.state.ViewCands){
+                    let candidates = this.state.ViewCands.candidates.map(e=><Card className="shadow mt">
                 <CardImg></CardImg>
                 <CardHeader>{e.name}</CardHeader>
                 <CardBody>
@@ -436,33 +478,43 @@ export default class IDashboard extends React.Component{
                 </CardBody>
             </Card>)
             return <div>
-            <button className="btn btn-secondary" onClick={this.toggle}>View Candidates</button>
             <Modal isOpen={this.state.modal} toggle={this.toggle} className={props.className}>
-            <ModalHeader toggle={this.toggle}>Results for: {election.motion}</ModalHeader>
+            <ModalHeader toggle={this.toggle}>Results for: {this.state.ViewCands.election}</ModalHeader>
             <ModalBody>
                 {candidates}
             </ModalBody>
             <ModalFooter>
                 <Button color="secondary" onClick={this.toggle}>Cancel</Button>
             </ModalFooter>
-            </Modal>
+            </Modal>     
         </div>
+            } else {
+                return <div>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} className={props.className}>
+                <ModalHeader toggle={this.toggle}>Loading Data...</ModalHeader>
+                <ModalBody>
+                <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                </ModalFooter>
+                </Modal>     
+            </div>
             }
-            
-        }
-        const MyElections = ()=>{
+    }
+        const MyElections = (props)=>{
             if(!this.state.Elections){
-                return <tr><td>No elections created</td></tr>
+                return <span className="d-flex justify-content-center"><img src={Load} alt="Loading..." height="200px" /></span>
             } else {
                 var electionslist = this.state.Elections.map(e =>       
-                    <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td><ViewCandidates elec = {e.electionId}></ViewCandidates></td></tr>
+                    <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{e.start}</td><td>{e.end}</td><td className={props.showControls}>  <Button onClick={(ev)=>{this.getCandidatesByElection(e.electionId)}}>View Candidates</Button><ViewCandidates elec = {e.electionId}></ViewCandidates></td></tr>
                 );
                 return <Table responsive>
                     <th>Id</th>
                     <th>Motion</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>View Details</th>
+                    <th className={props.showControls}>View Details</th>
                     <tbody>{electionslist}</tbody>
                     </Table>;
             }
@@ -529,6 +581,36 @@ export default class IDashboard extends React.Component{
                     </Row>
             }
         }
+        const PdfComp = (props)=>{
+            var pdf = 
+            <Modal size="lg" isOpen={this.state.pdfmodal} toggle={this.pdftoggle} className={props.className}>
+            <ModalHeader toggle={this.pdftoggle}>Generate PDF Report</ModalHeader>
+            <ModalBody style={{ overflow: 'scroll'}}> 
+                <PdfView>
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-column justify-content-center">
+                            <span className="d-flex justify-content-center">For {props.for}</span>
+                            <span><h2>{props.title}</h2></span>
+                            <div>
+                                {props.children}
+                            </div>
+                        </div>
+                        <div className="align-self-baseline justify-content-center">
+                            MIMI
+                        </div>
+                        
+                    </div>
+                    
+                
+                    
+                </PdfView>
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={this.pdftoggle}>Cancel</Button>
+            </ModalFooter>
+            </Modal>;
+            return pdf;     
+        }
         const DashHome = ()=>{
             return  <Container>
             <Row className="d-flex flex-row">
@@ -538,8 +620,8 @@ export default class IDashboard extends React.Component{
                         <CardBody>
                             <CardTitle>
                                 <h4>Admins</h4>
-                                <span>{this.state.Admins.length}</span>
                             </CardTitle>
+                            <span className="d-flex justify-content-center"><GetData part='admin'></GetData></span>
                         </CardBody>
                     </Card>
                 </Col>
@@ -549,8 +631,8 @@ export default class IDashboard extends React.Component{
                         <CardBody>
                             <CardTitle>
                                 <h4>Elections</h4>
-                                <span>{this.state.Elections.length}</span>
                             </CardTitle>
+                            <span className="d-flex justify-content-center"><GetData part='election'></GetData></span>
                         </CardBody>
                     </Card>
                 </Col>
@@ -561,7 +643,7 @@ export default class IDashboard extends React.Component{
                         <CardBody>
                             <CardTitle>
                                 <span><h4>Voters</h4></span>
-                                <span className="pull-right "><GetData part='voter'></GetData></span>
+                                <span className="d-flex justify-content-center"><GetData part='voter'></GetData></span>
                             </CardTitle>
                             
                         </CardBody>
@@ -573,7 +655,7 @@ export default class IDashboard extends React.Component{
                         <CardBody>
                             <CardTitle>
                                 <span><h4>Regulators</h4></span>
-                                <span className="pull-right "><GetData part='regulator'></GetData></span>
+                                <span className="d-flex justify-content-center"><GetData part='regulator'></GetData></span>
                             </CardTitle>            
                         </CardBody>
                     </Card>
@@ -669,10 +751,10 @@ export default class IDashboard extends React.Component{
                     </div>
                     <div className="sidelinks">
                         <a href={`${this.props.match.url}/`}>Home</a>
-                        <a href={`${this.props.match.url}/Admins`}>Admins</a>
-                        <a href={`${this.props.match.url}/Elections`}>Elections</a>
-                        <a href={`${this.props.match.url}/Regulators`}>Regulators</a>
-                        <a href={`${this.props.match.url}/Voters`}>Voters</a>
+                        <a href={`${this.props.match.url}Admins/`}>Admins</a>
+                        <a href={`${this.props.match.url}Elections/`}>Elections</a>
+                        <a href={`${this.props.match.url}Regulators/`}>Regulators</a>
+                        <a href={`${this.props.match.url}Voters/`}>Voters</a>
                     </div>
                 </div>
                     <div className="content-wrapper">
@@ -712,6 +794,8 @@ export default class IDashboard extends React.Component{
                                         <h2>Admins</h2>
                                     </CardTitle>
                                         <MyAdmins Admins = {this.state.Admins} onDelete = {this.deleteAdmin}></MyAdmins>
+                                        <Button outline block color="primary" onClick={this.pdftoggle}>PDF</Button>
+                                    <PdfComp title={"Admins List"} for={profs.name}><MyAdmins Admins = {this.state.Admins} showControls="hidden"></MyAdmins></PdfComp>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -755,6 +839,18 @@ export default class IDashboard extends React.Component{
                                     <h2>Elections</h2>
                                 </CardTitle>
                                     <MyElections></MyElections>
+                                    <Button outline block color="primary" onClick={this.pdftoggle}>PDF</Button>
+                                    <PdfComp title={"Election List"} footer={profs.name}><MyElections showControls="hidden"></MyElections></PdfComp>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                        <Card className="shadow mt">
+                            <CardBody>
+                                <CardTitle><h2>Active Elections</h2></CardTitle>
+                                <ActiveElections></ActiveElections>
                             </CardBody>
                         </Card>
                     </Col>
@@ -767,7 +863,7 @@ export default class IDashboard extends React.Component{
                                 <CardTitle>
                                     <h2>New Elections</h2>
                                 </CardTitle>
-                                    <NewElection admin={myAdmin}></NewElection>
+                                    <NewElection admin={myAdmin} fetchElections = {this.fetchElecs}></NewElection>
                             </CardBody>
                         </Card>
                     </Col>
@@ -788,7 +884,8 @@ export default class IDashboard extends React.Component{
                         </Container>
                         }/>
                 <Route path={`${this.props.match.url}/Voters`} render={
-                        (props)=><VotersPage></VotersPage>
+                        (props)=><VotersPage>
+                        </VotersPage>
                         }/>
                 </div>
             </div>

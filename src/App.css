@@ -1,31 +1,15 @@
+:root{
+  --main-bg : #059DC0;
+  --secondary-bg : #04D4F0;
+  --main-fg: #04ECF0;
+  --secondary-fg: #6AF2F0;
+  --main-color: white;
+}
 Table{
   overflow-x: scroll;
 }
 .overflow{
   overflow-x: scroll;
-}
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {
@@ -60,16 +44,15 @@ Table{
   height: 100%;
   width: 200px;
   position: fixed;
-  z-index: 1;
   top: 0;
   left: 0;
-  background-color: #059DC0;
+  background-color: var(--main-bg);
   overflow-x: hidden;
-  padding-top: 50px;
+  padding-top: 100px;
   padding: 10px;
 }
 .sidebar a{
-  color: white;
+  color: var(--main-color);
   width: 100%;
   display: block;
   background-color: #04D4F0;
@@ -81,7 +64,7 @@ Table{
 }
 .sidebar a:hover{
   transform: scale(120%);
-  background-color: white;
+  background-color: var(--main-color);
   color: #04D4F0;
   text-decoration: none;
   box-shadow: 2px 4px 30px white;
@@ -94,7 +77,7 @@ Table{
   min-height: 100vh;
   justify-content: center;
   background-attachment: fixed;
-  background-color: #059DC0;
+  background-color: var(--main-bg);
   background-size: cover;
 }
 .content-wrapper{
@@ -115,12 +98,12 @@ Table{
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
-  color: white;
+  color: var(--main-color);
 }
 
 /*----------------Feed for all --------------*/
 .cool-bg{
-  background-color: #ffffff;
+  background-color:var(--main-bg);
   background-attachment: fixed;
   background-size: cover;
 }
@@ -136,14 +119,46 @@ Table{
 .card , .card.title, .card-header{
   border-radius : 30px;
   padding: 10px;
-  background-color: rgb(221, 252, 251); 
+  background-color: var(--secondary-fg); 
 }
 .card-header{
-  background-color: #6AF2F0;
+  background-color: var(--secondary-fg);
 }
 .btn{
   border-radius: 15px;
 }
 .modal-dialog, .modal-content{
   border-radius : 30px;
+}
+.zindex{
+  z-index: 2;
+}
+.hidden{
+  display: none;
+}
+input[type=text], [type=date], [type=select], [type=number], [type=email], select{
+  border-radius: 20px;
+  background-color: var(--secondary-bg);
+  border: transparent;
+  transition: all 0.2s ease-in;
+}
+.form-control select{
+  border-radius: 20px;
+  background-color: var(--secondary-bg);
+  border: transparent;
+  transition: all 0.2s ease-in;
+}
+input:hover{
+  border-radius: 20px;
+  box-shadow: 2px 2px 10px white;
+  background-color: var(--main-color);
+  border: transparent;
+  font-size: 1.15em;
+}
+input:focus{
+  border-radius: 20px;
+  box-shadow: 2px 2px 10px white;
+  background-color: var(--main-color);
+  font-size: 1.15em;
+  color: var(--secondary-bg)
 }

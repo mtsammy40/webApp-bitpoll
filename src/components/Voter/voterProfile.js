@@ -50,7 +50,9 @@ export default class VoterProfile extends React.Component{
                                 <Col md={12}>
                                     <ProfileCard></ProfileCard>
                                 </Col>
-                                <Col md={12}>
+                            </Row>
+                            <Row>
+                                <Col sm={12} md={12}>
                                     <Feed></Feed>
                                 </Col>
                             </Row>   

@@ -62,7 +62,7 @@ export default class MyAdmins extends React.Component{
                 return <tr><td>Loading Admins...</td></tr>
             } else {
                 var Adminslist = this.props.Admins.map(v =>       
-                    <tr key={v.id}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td><div>
+                    <tr key={v.id}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td className={this.props.showControls}><div>
                         <Button outline color="danger" onClick={e=>this.onDeletee(v.id)}>Remove</Button>
                    
                 </div></td></tr>
@@ -74,7 +74,7 @@ export default class MyAdmins extends React.Component{
                         <th>Name</th>
                         <th>Nationality</th>
                         <th>gender</th>
-                        <th>Remove</th>
+                        <th className={this.props.showControls}>Remove</th>
                     </tr>
                         <tbody>{Adminslist}</tbody>
                     </Table>

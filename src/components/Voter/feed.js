@@ -43,7 +43,7 @@ export default class Feed extends React.Component{
         </Card>
         );
         return (
-            <Container md={8}>
+            <Container md={12}>
               <CardColumns>
               {feedlist}
               </CardColumns>
