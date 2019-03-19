@@ -984,7 +984,7 @@ export default class IDashboard extends React.Component{
                                 <CardTitle>
                                     <h2>New Elections</h2>
                                 </CardTitle>
-                                    <NewElection admin={myAdmin} fetchElections = {this.fetchElecs} profile={this.props.profile}></NewElection>
+                                    <NewElection admin={myAdmin} fetchElections = {this.fetchElecs} profile={profs}></NewElection>
                             </CardBody>
                         </Card>
                     </Col>

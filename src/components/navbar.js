@@ -43,7 +43,7 @@ export default class Navigation extends React.Component {
                     <NavLink href="/Profile">{this.props.profile.email}</NavLink>
                     </DropdownItem>
                     <DropdownItem>
-                      <Button outline block color="secondary" onClick="http://35.202.24.146:3002/auth/logout">Log Out</Button>
+                    <NavLink href="/Profile">Log Out</NavLink>
                     </DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem>

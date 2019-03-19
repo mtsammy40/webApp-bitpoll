@@ -2,13 +2,11 @@ import React from 'react';
 import {Container, Input, Label, FormGroup, Row, Col} from 'reactstrap';
 import Api from '../../api/api';
 import Moment from 'moment';
-import angel from '../../api/angel';
 export default class NewElection extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             candidateNames:[],
-            profile: props.profile
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -47,6 +45,8 @@ export default class NewElection extends React.Component{
         this.setState({ candidateNames });
         console.log('Namessss2', this.state); */
         delete this.state.cand_no;
+        var admin = document.getElementsByName('admin').value;
+        this.setState({ admin });
         console.log('state', this.state);
         Api.post('org.bitpoll.net.CreateElection', this.state, { withCredentials: true}).then(res => {
             alert('successfully set: '+ res.data.motion);
@@ -61,16 +61,31 @@ export default class NewElection extends React.Component{
             } 
         });
     }
-    componentWillReceiveProps(nextProps){
+    componentWillMount(){
         if(this.props.profile){
-            this.setState({this.state.p})
+            var admin = this.props.profile.id;
+            this.setState({ admin });
         }
     }
+    componentWillReceiveProps(nextProp){
+        if(this.props.profile !== nextProp.profile){
+            console.log('profssss', nextProp.profile);
+            var admin = "resource:"+nextProp.profile.$class+"#"+nextProp.profile.id;
+            this.setState({ admin });
+        }
+    }
+
     render(){ 
-        console.log('admin', this.state.profile);
+        console.log('prop='+this.props.profile.id, this.state.admin);
             var tb = [];
             for (var i = 1; i<=this.state.cand_no; i++){   
                 tb.push(i);
+            }
+            var admin;
+            if(this.props.profile){
+                admin= "resource:"+this.props.profile.$class+"#"+this.props.profile.id;
+            } else {
+                admin = "...Loading";
             }
             if(!tb){
                 const ListItem = <p>No record</p>
@@ -93,7 +108,7 @@ export default class NewElection extends React.Component{
                     </FormGroup>
                     <FormGroup>
                         <Label for="desctb">Admin</Label>
-                        <Input type="text" className="form-control" value={this.props.profile.id} name="admin" disabled/>
+                        <Input type="text" className="form-control" value={this.state.admin} name="admin" disabled/>
                     </FormGroup>
                     <Row form>
                         <Col md={6}>
