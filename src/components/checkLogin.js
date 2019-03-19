@@ -34,11 +34,18 @@ export default class CheckLogin extends React.Component{
               }
               var noCard = false;
             this.setState({noCard});
-            apis.get('system/ping', {withCredentials: true}).then(res =>{
-                console.log('starting verification');
-                if(res.data.participant){
-                    alert('Validity Verified');
-                }
+            apis.post('wallet/'+this.state.file.name+'/setDefault', {withCredentials: true}).then(res=>{
+                console.log('default set', res);
+                apis.get('system/ping', {withCredentials: true}).then(res =>{
+                    console.log('starting verification');
+                    if(res.data.participant){
+                        alert('Validity Verified');
+                    }
+            }).catch(err=>{
+                console.log('error settting default', err);
+                alert('error');
+            });
+            
             }).catch(err=>{
                 console.log('err with card');
                 if(err.response && err.response.data.error.message.indexOf('Error trying to enroll user')!== -1){
@@ -90,9 +97,9 @@ export default class CheckLogin extends React.Component{
                 var authorized = true;
                 this.setState({ authorized });
             }
-            if(!this.state.authorized){
+            /* if(!this.state.authorized){
                 return <Redirect to="/SignIn" />
-            } 
+            }  */
             if(this.state.noCard){
                 console.log('noCard', this.state.noCard)
             } else {

@@ -12,6 +12,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button } from 'reactstrap';
+import logolsm from '../Images/logoLSm.png';
 
 export default class Navigation extends React.Component {
   constructor(props) {
@@ -56,7 +57,7 @@ export default class Navigation extends React.Component {
     return (
       <div>
         <Navbar color="light" light expand="md" className="zindex">
-          <NavbarBrand href="/">Bitpoll</NavbarBrand>
+          <NavbarBrand href="/"><img src={logolsm} alt="Logo" width="200px"></img></NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>

@@ -8,7 +8,8 @@ export default class NewVoter extends React.Component {
     this.state =  {
         gender : "male",
         valid: true,
-        nationality: 'Kenya' 
+        nationality: 'Kenya',
+//        institution: props.profile.institution
     };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
@@ -40,8 +41,13 @@ export default class NewVoter extends React.Component {
     }).catch(e=>{
       console.log('e', e.responseText);
     })
+    if(this.props.profile){
+      var institution = this.props.profile.institution;
+      this.setState({ institution });
+    }
   }
   render() {
+    console.log('state das', this.state);
     let countriesList=[];
     if(!this.state.countries){
       countriesList=[<option>Kenya</option>];
@@ -110,7 +116,21 @@ export default class NewVoter extends React.Component {
               </FormGroup>  
             </Col>
           </Row>
-          <Input type="submit" value="Sign up" className="btn btn-success" />
+          <Row form>
+            <Col md={6}>
+             <Label for="phoneNo">
+              Upload Picture</Label>
+            <Input type="file" name="dp" id="dp" onChange={this.handleChange} />
+            </Col>
+            <Col md={6}>
+              <Label for="phoneNo">
+              Telephone</Label>
+              <Input type="text" name="phoneNo" onChange={this.handleChange} />
+            </Col>
+          </Row>
+          <Row>
+            <Input type="submit" value="Sign up" className="btn btn-success" />
+          </Row>
         </Form>
       </Container>
     );

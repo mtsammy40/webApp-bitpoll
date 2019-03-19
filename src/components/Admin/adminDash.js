@@ -1,9 +1,9 @@
 import React from 'react';
 import {Row, Container, Col, Card, CardBody, CardHeader, CardImg, CardTitle, CardText, Table,
-    Modal, ModalHeader, ModalBody, ModalFooter, Button, Badge } from 'reactstrap';
+    Modal, ModalHeader, ModalBody, ModalFooter, Button, Badge, ListGroup, ListGroupItemHeading, ListGroupItem } from 'reactstrap';
 import {
     BrowserRouter as Router,
-    Link,
+    Link, Redirect,
     Route // for later
   } from 'react-router-dom';
 import Api from '../../api/api';
@@ -17,10 +17,15 @@ import NewAdmin from './newAdmin';
 import NewElection from './newElection';
 import NewVoter from './newVoter';
 import PendingAdmin from './pendingAdmins';
+import profile from '../../Images/profile.jpg';
 import angel from '../../api/angel';
 import MyAdmins from './myAdmins';
 import CandidateChart from '../candidateChart';
 import PdfView from './pdf';
+import api from '../../api/api';
+import UpdateFormReg from './updateRegs';
+import DeleteRegM from './deleteRegm';
+import UpdateVoter from './updateVoter';
 export default class IDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -32,6 +37,7 @@ export default class IDashboard extends React.Component{
             modal: false,
             pdfmodal: false,
             DeleteModal: false,
+            DeleteRegModal: false,
             UpdateProfileModal: false,
             UpdateProfile: {},
         };
@@ -53,6 +59,13 @@ export default class IDashboard extends React.Component{
         this.getCandidatesByElection = this.getCandidatesByElection.bind(this);
         this.getChartData = this.getChartData.bind(this);
         this.pdftoggle = this.pdftoggle.bind(this);
+        this.toggleUpdateReg = this.toggleUpdateReg.bind(this);
+        this.prepareUpdateReg = this.prepareUpdateReg.bind(this);
+        this.handleUpdateReg = this.handleUpdateReg.bind(this);
+        this.prepareDeleteReg = this.prepareDeleteReg.bind(this);
+         this.prepareUpdateVoter = this.prepareUpdateVoter.bind(this);
+         this.toggleUpdateVoter = this.toggleUpdateVoter.bind(this);
+        this.toggleDeleteReg = this.toggleDeleteReg.bind(this);
     }
     toggleRefetch(){
         this.setState(prev=>({
@@ -77,6 +90,11 @@ export default class IDashboard extends React.Component{
             UpdateProfileModal: !prevState.UpdateProfileModal
           }));
       }
+      toggleDeleteReg(){
+        this.setState(prevState => ({
+            DeleteRegModal: !prevState.DeleteRegModal
+          }));
+      }
       toggleSuccessModal(){
         this.setState(prevState => ({
             SuccessModal: !prevState.SuccessModal
@@ -85,6 +103,16 @@ export default class IDashboard extends React.Component{
       toggleDeleteModal(){
         this.setState(prevState => ({
             DeleteModal: !prevState.DeleteModal
+          }));
+      }
+      toggleUpdateReg(){
+        this.setState(prevState => ({
+            UpdateRegModal: !prevState.UpdateRegModal
+          }));
+      }
+      toggleUpdateVoter(){
+        this.setState(prevState => ({
+            UpdateVoterModal: !prevState.UpdateVoterModal
           }));
       }
     fetchAdmins = ()=>{
@@ -98,6 +126,41 @@ export default class IDashboard extends React.Component{
     }).catch(error=> {
         console.log(error.response);
     });
+    }
+    prepareUpdateReg(id){
+        var UpdateReg = this.state.Regs.find(r=>{
+            return r.id === id;
+        });
+        this.setState({ UpdateReg }, (u)=>{
+            console.log('prevstate', this.state.UpdateReg);
+            this.toggleUpdateReg();
+        });
+    }
+    prepareUpdateVoter(id){
+        var UpdateVoter = this.state.Voters.find(r=>{
+            return r.id === id;
+        });
+        this.setState({ UpdateVoter }, (u)=>{
+            console.log('prevstate', this.state.UpdateVoter);
+            this.toggleUpdateVoter();
+        });
+    }
+    prepareDeleteReg(id){
+        var DeleteReg = this.state.Regs.find(r=>{
+            return r.id === id;
+        });
+        this.setState({ DeleteReg }, (u)=>{
+            console.log('prevstate', this.state.DeleteReg);
+            this.toggleDeleteReg();
+        });
+    }
+    handleUpdateReg(){
+        api.put('org.bitpoll.net.Regulator/'+this.state.UpdateReg.id, this.state.UpdateReg, {withCredentials: true}).then(res=>{
+            alert('Updated!');
+            delete this.state.UpdateReg;
+        }).catch(err=>{
+            console.log('error updating', err);
+        })
     }
     fetchPAdmins(){
         angel.get('AllPendingAdmins/').then(res=>{
@@ -161,6 +224,18 @@ export default class IDashboard extends React.Component{
             this.setState({SuccessMessage});
             this.toggleDeleteModal();
         }).catch(e=>{
+            alert("canot delete, check previledges");
+            console.log('error in delete admin', e);
+        });
+    }
+    deleteReg(id){
+        Api.delete('org.bitpoll.net.Regulator/'+id, {withCredentials: true}).then(res=>{
+            this.fetchRegs();
+            var SuccessMessage="Regulator Successfuly Deleted";
+            this.setState({SuccessMessage});
+            this.toggleDeleteReg();
+        }).catch(e=>{
+            alert("canot delete, check previledges");
             console.log('error in delete admin', e);
         });
     }
@@ -280,7 +355,7 @@ export default class IDashboard extends React.Component{
         let Insts;
         let myAdmin = {'id': 'default'};
         if(!this.state.Insts){
-            Insts = ["none"];
+            Insts = ["ota"];
         } else {
             Insts = this.state.Insts;
         }
@@ -296,6 +371,7 @@ export default class IDashboard extends React.Component{
             }
         } else {
             InfoCard = (props) =>{
+                myDetails.dob = myDetails.dob.split('T')[0];
                 const infotable =
                 <div>
                     <Table responsive>
@@ -310,12 +386,12 @@ export default class IDashboard extends React.Component{
                     <Button color="danger" onClick={this.toggleUpdateProfile}>Update</Button>
                     <div>
         <Modal isOpen={this.state.UpdateProfileModal} toggle={this.toggleUpdateProfile} className={this.props.className}>
-          <ModalHeader toggle={this.toggleUpdateProfile}>Modal title</ModalHeader>
+          <ModalHeader toggle={this.toggleUpdateProfile}>Update Data</ModalHeader>
           <ModalBody>
-              <UpdateForm profile={myDetails}></UpdateForm>
+              <UpdateForm profile={myDetails} onSuccess={this.toggleUpdateProfile}></UpdateForm>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>{' '}
+            <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>
             <Button color="secondary" onClick={this.toggleUpdateProfile}>Cancel</Button>
           </ModalFooter>
         </Modal>
@@ -325,6 +401,16 @@ export default class IDashboard extends React.Component{
             }
         }
         if(this.props.profile){
+            switch(this.props.profile.$class){
+                case 'org.bitpoll.net.Regulator':
+                    return <Redirect to="/RegulatorDashboard" />;
+                case 'org.bitpoll.net.Voter':
+                    return <Redirect to="/VoterProfile" />;
+                case 'NetworkAdmin':
+                    console.log('Shida ni??', this.props.profile)
+                    return <Redirect to="/IDashboard" />;
+                default:
+            }
             var profs = this.props.profile;
         } else {
             var profs = 'Institution....';
@@ -339,14 +425,16 @@ export default class IDashboard extends React.Component{
             } else {
 
             
-            var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td></tr>)
+            var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td><td><Button outline onClick={e=>{this.prepareUpdateVoter(v.id)}} color="secondary">Update</Button></td></tr>)
+                        var votersList2 = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td></tr>)
+
             return <Container>
                         <Row>
                             <Col md={12}>
                                 <Card className="mt shadow">
                                 <CardBody>
                                 <CardTitle><h2>New Voter</h2></CardTitle>
-                                <NewVoter onSuccess={this.fetchVoters}></NewVoter>
+                                <NewVoter onSuccess={this.fetchVoters} profile={this.props.profile}></NewVoter>
                                 </CardBody>
                                 </Card>
                             </Col>
@@ -368,9 +456,9 @@ export default class IDashboard extends React.Component{
                                                     {votersList}
                                                 </tbody>
                                                 <tr></tr>
-                                            </Table>
+                                            </Table >
                                             <Button outline block color="primary" onClick={this.pdftoggle}>PDF</Button>
-                                    <PdfComp title={"Voters List"} for={profs.name}><Table responsive>
+                                    <PdfComp title={"Voters List"} for={profs.name} showControls="hidden"><Table responsive>
                                                 <tr>
                                                     <th>Name</th>
                                                     <th>Gender</th>
@@ -378,16 +466,25 @@ export default class IDashboard extends React.Component{
                                                     <th>Date of Birth</th>
                                                 </tr>
                                                 <tbody>
-                                                    {votersList}
+                                                    {votersList2}
+                                                    <tr ><td></td></tr>
                                                 </tbody>
-                                                <tr></tr>
+                                                
                                             </Table></PdfComp>
                                         </Row>
                                     </CardBody>
                                 </Card>
                             </Col>
                         </Row>
-
+                        <Modal isOpen={this.state.UpdateVoterModal} size="lg" toggle={this.toggleUpdateVoter} className={this.props.className}>
+          <ModalHeader toggle={this.toggleUpdateVoter}>Update Data</ModalHeader>
+          <ModalBody>
+              <UpdateVoter profile={this.state.UpdateVoter} onSuccess={()=>{this.fetchVoters(); this.toggleUpdateVoter()}}></UpdateVoter>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.toggleUpdateVoter}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
                 </Container>
             }
         }
@@ -410,15 +507,14 @@ export default class IDashboard extends React.Component{
                 }
             }
         }
-        
         const MyRegs= ()=>{
             if(!this.state.Regs){
                 return <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
             } else {
                 var Regslist = this.state.Regs.map(R =>       
-                    <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary">Edit</button></td><td><button className="btn btn-danger">Remove</button></td></tr>
+                    <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary" onClick={e=>{this.prepareUpdateReg(R.id)}}>Edit</button></td><td><button className="btn btn-danger" onClick={e=>{this.prepareDeleteReg(R.id)}}>Remove</button></td></tr>
                 );
-                return <Table responsive>
+                return <div><Table responsive>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Email</th>
@@ -426,9 +522,29 @@ export default class IDashboard extends React.Component{
                     <th>Edit</th>
                     <th>Remove</th>
                     <tbody>{Regslist}</tbody>
-                    </Table>;
+                    </Table>
+                    <Modal isOpen={this.state.UpdateRegModal} toggle={this.toggleUpdateReg} className={this.props.className}>
+          <ModalHeader toggle={this.toggleUpdateReg}>Update Data</ModalHeader>
+          <ModalBody>
+              <UpdateFormReg profile={this.state.UpdateReg} onSuccess={()=>{this.fetchRegs(); this.toggleUpdateReg()}}></UpdateFormReg>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.toggleUpdateReg}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen={this.state.DeleteRegModal} toggle={this.toggleDeleteReg} className={this.props.className}>
+          <ModalHeader toggle={this.toggleDeleteReg}>Delete Modal</ModalHeader>
+          <ModalBody>
+              <DeleteRegM profile={this.state.DeleteReg} onSuccess={()=>{this.fetchRegs(); this.toggleDeleteReg()}}></DeleteRegM>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.toggleDeleteReg}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+                    </div>;
             }
         }
+        
         const Upform = () =>{
             if(!this.state.Admins[0]){
                 return <span className="d-flex justify-content-center"><img src={Load} alt="loading..."></img></span>
@@ -441,6 +557,7 @@ export default class IDashboard extends React.Component{
                 console.log('starting AE', this.state.AE);
                 var active = this.state.AE.map((c, i)=>{
                     return <Card className="shadow mt" key={i}>
+                    <CardBody>
                  <CardTitle>
                  <h2>{c.chart.datasets[0].label}</h2>
                  </CardTitle>
@@ -452,7 +569,7 @@ export default class IDashboard extends React.Component{
                         <Table responsive>
                             <tr><td>Motion: </td><td>{c.chart.datasets[0].label}</td></tr>
                             <tr><td>Candidates: </td><td>{c.chart.labels.map((l, i) => <tr key={i}><td>{l}</td><td>{c.chart.datasets[0].data[i]}</td></tr>)}</td></tr>
-                            <tr><td>Total Votes: </td><td>{c.chart.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
+                            <tr className="total"><td>Total Votes: </td><td className="align-text-right">{c.chart.datasets[0].data.reduce((a, b)=>a + b, 0)}</td></tr>
                         </Table>
                     </Col>
                 </Row> 
@@ -460,7 +577,8 @@ export default class IDashboard extends React.Component{
                     <Col sm={12}>
                         <CandidateChart candidates={this.state.candidates} refetch={this.state.reFetch} toggleRefetch={this.toggleRefetch} election={c.electionId}></CandidateChart>
                     </Col>
-                </Row>   
+                </Row> 
+                </CardBody>  
                 </Card>
                 });
                 return active;
@@ -663,8 +781,11 @@ export default class IDashboard extends React.Component{
             </Row>
             <Row>
                 <Col md={{size: 9}} >
-                    <Card className="shadow mt">
-                        <CardImg></CardImg>
+                    <Card className="shadow mt prof">
+                        <div className="profile">
+                            <img src={Dp} alt="profile"></img>
+                        </div>
+                        
                         <CardBody>
                             <CardTitle>
                                 <h2>My Profile</h2>
@@ -863,7 +984,7 @@ export default class IDashboard extends React.Component{
                                 <CardTitle>
                                     <h2>New Elections</h2>
                                 </CardTitle>
-                                    <NewElection admin={myAdmin} fetchElections = {this.fetchElecs}></NewElection>
+                                    <NewElection admin={myAdmin} fetchElections = {this.fetchElecs} profile={this.props.profile}></NewElection>
                             </CardBody>
                         </Card>
                     </Col>
@@ -876,7 +997,7 @@ export default class IDashboard extends React.Component{
                                     <Card className="mt shadow">
                                     <CardBody>
                                     <CardTitle><h2>Update Information</h2></CardTitle>
-                                    <Upform {...props} profile={this.state.Admins[0]}></Upform>
+                                    <Upform {...props} profile={this.props.profile}></Upform>
                                     </CardBody>
                                     </Card>
                                 </Col>

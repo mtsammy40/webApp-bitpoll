@@ -8,7 +8,7 @@ export default class NewElection extends React.Component{
         super(props);
         this.state = {
             candidateNames:[],
-            admin:'org.bitpoll.net.Admin#33699199',
+            profile: props.profile
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -61,7 +61,13 @@ export default class NewElection extends React.Component{
             } 
         });
     }
+    componentWillReceiveProps(nextProps){
+        if(this.props.profile){
+            this.setState({this.state.p})
+        }
+    }
     render(){ 
+        console.log('admin', this.state.profile);
             var tb = [];
             for (var i = 1; i<=this.state.cand_no; i++){   
                 tb.push(i);
@@ -87,7 +93,7 @@ export default class NewElection extends React.Component{
                     </FormGroup>
                     <FormGroup>
                         <Label for="desctb">Admin</Label>
-                        <Input type="text" className="form-control" value={this.state.admin} name="admin" onChange={this.handleChange} required/>
+                        <Input type="text" className="form-control" value={this.props.profile.id} name="admin" disabled/>
                     </FormGroup>
                     <Row form>
                         <Col md={6}>

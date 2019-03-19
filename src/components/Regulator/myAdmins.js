@@ -50,7 +50,7 @@ export default class MyAdmins extends React.Component{
                     </Container>
                  </ModalBody>
                  <ModalFooter>
-                     <Button outline color="danger" onClick={e=>{this.props.onDelete(this.state.Deleteed.id); this.toggleDeleteModal();}}>Delete</Button>
+                     <Button outline color="danger" onClick={e=>{this.toggleDeleteModal();this.props.onDelete(this.state.Deleteed.id)}}>Delete</Button>
                      <Button color="secondary" onClick={this.toggleDeleteModal}>Cancel</Button>
                  </ModalFooter>
                  </Modal>

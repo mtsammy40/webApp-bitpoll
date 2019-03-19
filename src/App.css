@@ -46,7 +46,7 @@ Table{
   position: fixed;
   top: 0;
   left: 0;
-  background-color: var(--main-bg);
+  background-image: linear-gradient(90deg, var(--main-bg), var(--secondary-bg));
   overflow-x: hidden;
   padding-top: 100px;
   padding: 10px;
@@ -116,19 +116,35 @@ Table{
 .br-20{
   border-radius: 20px;
 }
-.card , .card.title, .card-header{
+.card, .card-footer{
   border-radius : 30px;
   padding: 10px;
   background-color: var(--secondary-fg); 
+  border: none;
+}
+.card.title, .card-header{
+  border-radius : 30px 30px 0 0;
+  padding: 10px;
+  background-color: var(--secondary-fg); 
+  border: none; 
+}
+.modal-content{
+  border-radius : 30px;
+  padding: 10px;
+  background-color: var(--secondary-fg);
+  background-image: linear-gradient(90deg, var(--main-bg), var(--secondary-fg));
 }
 .card-header{
-  background-color: var(--secondary-fg);
+  background-color: var(--main-fg);
+  border: none;
 }
 .btn{
-  border-radius: 15px;
+  border-radius: 20px;
+  box-shadow: none;
+ 
 }
-.modal-dialog, .modal-content{
-  border-radius : 30px;
+.btn:hover{
+  box-shadow: 0.5px 2px 15px rgba(0,0,0,0.3); 
 }
 .zindex{
   z-index: 2;
@@ -138,7 +154,7 @@ Table{
 }
 input[type=text], [type=date], [type=select], [type=number], [type=email], select{
   border-radius: 20px;
-  background-color: var(--secondary-bg);
+  background-color: var(--main-fg);
   border: transparent;
   transition: all 0.2s ease-in;
 }
@@ -147,6 +163,15 @@ input[type=text], [type=date], [type=select], [type=number], [type=email], selec
   background-color: var(--secondary-bg);
   border: transparent;
   transition: all 0.2s ease-in;
+}
+input[type=text]:disabled, [type=date]:disabled, [type=select]:disabled, [type=number]:disabled, [type=email]:disabled{
+  border-radius: 20px;
+  background: var(--main-bg);
+  border: transparent;
+  color: var(--secondary-bg);
+}
+input:disabled:hover{
+  box-shadow: none;
 }
 input:hover{
   border-radius: 20px;
@@ -160,5 +185,32 @@ input:focus{
   box-shadow: 2px 2px 10px white;
   background-color: var(--main-color);
   font-size: 1.15em;
-  color: var(--secondary-bg)
+  color: var(--secondary-bg);
+}
+input:disabled{
+  border-radius: 20px;
+  background-color: var(--main-bg);
+  color: var(--secondary-fg);
+}
+.list-group-item:first-child{
+  border-radius: 20px 20px 0 0;
+}
+.list-group-item:last-child{
+  border-radius: 0 0 20px 20px;
+}
+.card img{
+  border-radius: 20px;
+  margin: 0;
+}
+.card{
+  padding: 0;
+}
+.prof{
+  position: relative;
+}
+.profile{
+  height: 30%;
+  align-self: center;
+  background-image: url('./Images/profile.jpg');
+  background-size: cover;
 }
