@@ -132,7 +132,7 @@ Table{
   border-radius : 30px;
   padding: 10px;
   background-color: var(--secondary-fg);
-  background-image: linear-gradient(90deg, var(--main-bg), var(--secondary-fg));
+  background-image: linear-gradient(90deg, var(--secondary-bg), var(--secondary-fg));
 }
 .card-header{
   background-color: var(--main-fg);

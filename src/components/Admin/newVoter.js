@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import Api from '../../api/api';
+import angel from '../../api/angel';
 
 export default class NewVoter extends React.Component {
   constructor(props){
@@ -9,7 +10,6 @@ export default class NewVoter extends React.Component {
         gender : "male",
         valid: true,
         nationality: 'Kenya',
-//        institution: props.profile.institution
     };
     this.handleChange=this.handleChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
@@ -27,12 +27,30 @@ export default class NewVoter extends React.Component {
     delete this.state.countries;
     Api.post('org.bitpoll.net.Voter', this.state, { withCredentials: true}).then(res => {
         alert('successful');
+        var issuee = {
+          participant: 'resource:org.bitpoll.net.Voter#'+ this.state.id,
+          userID: this.state.id,
+          options: {"issuer" : true}
+      };
+        Api.post('system/identities/issue', issuee, {withCredentials: true, responseType: 'blob'}).then((res)=>{
+          console.log('my file', res);
+          var data = new FormData();
+         data.append('id', this.state.id);
+         data.append('email', this.state.email);
+         data.append('data', res.data);
+          angel.post('sendVoterEmail/', data)
+          .then(res=>{
+              console.log('voter id sent ', this.state.id)
+          }).catch(e=>{
+              console.log('email failed', e);
+          });
         this.props.onSuccess();
     }).catch(error => {
         alert('Please recheck your data and retry');
         console.log(error.response);
     });
-  }
+  });
+}
   componentDidMount(){
     Api.get('https://restcountries.eu/rest/v2/all?fields=name',).then(res => {
       var countries = res.data;

@@ -42,7 +42,7 @@ export default class MyAdmins extends React.Component{
                     <Container className="shadow mt p-2">
                     
                      <ListGroup>
-                        <ListGroupItemHeading>Are you sure you want to delete <span className="text-danger text-strong">{this.state.Deleteed.name}</span>?</ListGroupItemHeading>
+                        <ListGroupItemHeading>Are you sure you want to delete <span className="text-secondary text-strong">{this.state.Deleteed.name}</span>?</ListGroupItemHeading>
                          <ListGroupItem>Email: {this.state.Deleteed.email} </ListGroupItem>
                          <ListGroupItem>Id : {this.state.Deleteed.id}</ListGroupItem>
                          <ListGroupItem>Nationality : {this.state.Deleteed.nationality} </ListGroupItem>

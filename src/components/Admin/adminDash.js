@@ -383,7 +383,7 @@ export default class IDashboard extends React.Component{
                             <tr><td>Gender: </td><td> {myDetails.gender}</td></tr>
                         </tbody>
                     </Table>
-                    <Button color="danger" onClick={this.toggleUpdateProfile}>Update</Button>
+                    <Button color="danger" onClick={this.toggleUpdateProfile} style={{display: "inline"}}><i className="flaticon-edit"></i> Update</Button>
                     <div>
         <Modal isOpen={this.state.UpdateProfileModal} toggle={this.toggleUpdateProfile} className={this.props.className}>
           <ModalHeader toggle={this.toggleUpdateProfile}>Update Data</ModalHeader>
@@ -533,7 +533,7 @@ export default class IDashboard extends React.Component{
           </ModalFooter>
         </Modal>
         <Modal isOpen={this.state.DeleteRegModal} toggle={this.toggleDeleteReg} className={this.props.className}>
-          <ModalHeader toggle={this.toggleDeleteReg}>Delete Modal</ModalHeader>
+          <ModalHeader toggle={this.toggleDeleteReg}>Are you sure you want to Delete this Regulator?</ModalHeader>
           <ModalBody>
               <DeleteRegM profile={this.state.DeleteReg} onSuccess={()=>{this.fetchRegs(); this.toggleDeleteReg()}}></DeleteRegM>
           </ModalBody>

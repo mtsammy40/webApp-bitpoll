@@ -69,7 +69,7 @@ export default class DeleteRegM extends React.Component{
               </FormGroup>
             </Col>
           </Row>       
-          <Input type="submit" value="Sign up" className="btn btn-success col-md-3 offset-md-9" />
+          <Input className="btn btn-danger" type="submit" value="Delete" className="btn btn-success col-md-3 offset-md-9" />
         </Form>
             
         );
