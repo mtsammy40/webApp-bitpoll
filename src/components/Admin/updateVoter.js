@@ -21,12 +21,21 @@ export default class UpdateVoter extends React.Component{
     } 
     handleUpdate(e){
         e.preventDefault();
-        const data = {
-          email: this.state.form.email,
-          address: this.state.form.address,
-          name: this.state.form.name,
-        };
-        console.log('submit', data);
+        var form = this.state.form;
+        var data = {
+          name : form.name,
+          gender: form.gender,
+          dob: form.dob,
+          nationalId : form.nationalId,
+          nationality: form.nationality,
+          phoneNo: form.phoneNo,
+          dp: form.dp,
+          email: form.email,
+          county: form.county,
+          valid: form.valid,
+          institution: form.institution
+        }
+        console.log('submit', form);
         Api.put('org.bitpoll.net.Voter/'+this.state.form.id, data, {headers: {'Content-Type': 'application/json'}, withCredentials: true}).then(res => {
             alert('Successful');
             this.props.onSuccess();
@@ -45,7 +54,7 @@ export default class UpdateVoter extends React.Component{
         }
         return(
        <Container>
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleUpdate}>
           <Row form>
             <Col md={6}>
               <FormGroup>
@@ -118,7 +127,7 @@ export default class UpdateVoter extends React.Component{
             </Col>
           </Row>
           <Row>
-            <Input type="submit" value="Sign up" className="btn btn-success" />
+            <Input type="submit" value="Update" className="btn btn-success" />
           </Row>
         </Form>
       </Container>);

@@ -37,15 +37,7 @@ export default class UpdateForm extends React.Component{
           name: this.state.form.name,
         };
         console.log('submit', data);
-        Api.put('org.bitpoll.net.Voter/'+this.state.form.id, {
-          "county": this.state.form.county,
-          "dob": this.state.form.dob,
-          "email": this.state.form.email,
-          gender: this.state.form.gender,
-          nationality: this.state.form.nationality,
-          institution: this.state.form.institution,
-          name: this.state.form.name,
-        }, {headers: {'Content-Type': 'application/json'}, withCredentials: true}).then(res => {
+        Api.put('org.bitpoll.net.Voter/'+this.state.form.id, data, {headers: {'Content-Type': 'application/json'}, withCredentials: true}).then(res => {
             this.setState({Me : res.data});
         }).catch(e => {
             console.log('error in update', e.responseText)

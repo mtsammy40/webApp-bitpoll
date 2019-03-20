@@ -59,11 +59,12 @@ Table{
   color: var(--main-color);
   width: 100%;
   display: block;
-  background-color: var(--main-accent-color);
+  background: var(--secondary-bg);
   padding: 8px;
   text-decoration-style: none;
   border-radius: 20px;
   margin: 10px;
+  box-shadow: 2px, 2px, rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease-in-out;
 }
 .sidebar a:hover{
@@ -135,8 +136,7 @@ Table{
 .modal-content{
   border-radius : 30px;
   padding: 10px;
-  background-color: var(--secondary-fg);
-  background-image: linear-gradient(90deg, var(--secondary-bg), var(--secondary-fg));
+  background-color: var(--secondary-bg);
 }
 .card-header{
   background-color: var(--main-fg);

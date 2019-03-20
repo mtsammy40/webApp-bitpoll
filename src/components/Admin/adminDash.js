@@ -248,7 +248,7 @@ export default class IDashboard extends React.Component{
         this.fetchInsts();
         this.fetchCountries();
         this.getCandidates();
-        this.ws = new WebSocket('ws://35.202.24.146:80/');
+        this.ws = new WebSocket('ws://35.202.24.146:3003/');
         this.ws.onopen = ()=>{
         console.log('WebSockets is a go-go-go');
         }
@@ -816,7 +816,7 @@ export default class IDashboard extends React.Component{
                             <CardTitle>
                                 <h2>My Admins</h2>
                             </CardTitle>
-                                <MyAdmins></MyAdmins>
+                                <MyAdmins Admins={this.state.Admins}></MyAdmins>
                         </CardBody>
                     </Card>
                 </Col>

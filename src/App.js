@@ -60,7 +60,7 @@ class App extends Component {
     Api.get('org.bitpoll.net.Election', {withCredentials: true}).then(res=>{
       const Elections = res.data;
       this.setState({Elections});
-    }).catch(error => { 
+    }).catch(error => {
       console.log('App.js Fetch election error', error);
     });
   }
@@ -129,7 +129,7 @@ class App extends Component {
   render() {
     console.log('mother state', this.state);
     if(this.state.authorized){
-      console.log('auth?', this.state.authorized); 
+      console.log('auth?', this.state.authorized);
     }
     return (
       <Router>
