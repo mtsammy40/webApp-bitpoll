@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Row, Form, FormGroup, Label, Input, Container, FormFeedback } from 'reactstrap';
 import Api from '../../api/api';
+import angel from '../../api/angel';
 export default class NewReg extends React.Component {
   constructor(props){
     super(props);
@@ -21,12 +22,30 @@ export default class NewReg extends React.Component {
     e.preventDefault();
     delete this.state.countries;
     Api.post('org.bitpoll.net.Regulator', this.state, { withCredentials: true}).then(res => {
+      var issuee = {
+        participant: 'resource:org.bitpoll.net.Regulator#'+ this.state.id,
+        userID: this.state.id,
+        options: {}
+    };
+      Api.post('system/identities/issue', issuee, {withCredentials: true, responseType: 'blob'}).then((res)=>{
+        console.log('my file', res);
+        var data = new FormData();
+       data.append('id', this.state.id);
+       data.append('email', this.state.email);
+       data.append('data', res.data);
+        angel.post('sendRegEmail/', data)
+        .then(res=>{
+            console.log('Reg id sent ', this.state.id)
+        }).catch(e=>{
+            console.log('email failed', e);
+        });
         alert('successful');
     }).catch(error => {
         alert('Please recheck your data and retry');
         console.log(error.response);
     });
-  }
+  })
+}
   render() {
     return (
       <Container>

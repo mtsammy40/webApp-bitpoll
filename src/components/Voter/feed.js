@@ -24,26 +24,41 @@ export default class Feed extends React.Component{
         });
     }
     render(){
-        let feeds = this.state.elections;
-        let feedlist = feeds.map((feed)=> 
-        <Card key={feed.electionId} className="shadow mt">
-            <CardImg top width="100%" src={feed.img} alt="Card image cap" />
-            <CardBody>
-                <CardTitle><h2>{feed.motion}</h2></CardTitle>
-                <CardSubtitle>Valid voters: {feed.ballotKey.length}</CardSubtitle>
-                <CardText>
-                <ListGroup>
-        <ListGroupItem className="justify-content-between">Start Date: <Badge pill>{feed.start}</Badge></ListGroupItem>
-        <ListGroupItem className="justify-content-between">End Date: <Badge pill>{feed.end}</Badge></ListGroupItem>
-      </ListGroup></CardText>
-                <Button className="btn btn-primary" href={"/DumbFeed/" + feed.electionId}>View Election results</Button>
-                <Button className="btn btn-primary ml-auto" href={"/vote/" + feed.electionId}>Go to election</Button>
-            </CardBody>
-            <CardFooter><Badge color="success">Ongoing</Badge></CardFooter>
-        </Card>
-        );
+        let feedlist;
+        if(this.props.profile){
+            console.log('elections', this.state.elections);
+            console.log('myinst', this.props.profile );
+        }
+        if(this.state.elections && this.props.profile){
+            
+            let feeds = this.state.elections.find(e=>{
+                return e.intitution === this.props.profile.institution
+            });
+            console.log('elections', this.state.elections);
+            console.log('myinst', this.props.profile );
+            feedlist = feeds.map((feed)=> 
+            <Card key={feed.electionId} className="shadow mt">
+                <CardImg top width="100%" src={feed.img} alt="Card image cap" />
+                <CardBody>
+                    <CardTitle><h2>{feed.motion}</h2></CardTitle>
+                    <CardText className="shadow mt br-20">
+                    <ListGroup>
+                        <ListGroupItem><span className="d-flex justify-content-between"><span>Valid voters:</span> {feed.ballotKey.length}</span></ListGroupItem>
+            <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feed.start.split('T')[0]}</Badge></ListGroupItem>
+            <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feed.end.split('T')[0]}</Badge></ListGroupItem>
+          </ListGroup></CardText>
+                    <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feed.electionId}>View Election results</Button>
+                    <Button color='primary' className="shadow"  outline block href={"/vote/" + feed.electionId}>Go to election</Button>
+                </CardBody>
+                <CardFooter><Badge color="success" className="shadow" >Ongoing</Badge></CardFooter>
+            </Card>
+            );
+        } else {
+           feedlist = "No Elections available";
+        }
+        
         return (
-            <Container md={8}>
+            <Container md={12}>
               <CardColumns>
               {feedlist}
               </CardColumns>

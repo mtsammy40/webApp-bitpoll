@@ -19,6 +19,7 @@ import RegDash from './components/Regulator/regDash';
 import DumbFeed from './components/dumbFeed';
 import VoterProfile from './components/Voter/voterProfile';
 import CheckLogin from './components/checkLogin';
+import PdfView from './components/Admin/pdf';
 
 
 class App extends Component {
@@ -136,6 +137,7 @@ class App extends Component {
         <Navigation profile={this.state.profile}></Navigation>
         <div>
           <Switch>
+          <Route exact path="/pdf" component={PdfView} />
             <Route exact path="/" component={Header} />
             <Route exact path="/Feed" component={Feed} />
             <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>

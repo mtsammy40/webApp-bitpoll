@@ -16,8 +16,10 @@ export default class CandidateChart extends React.Component{
         }).catch(err=>{
             if(err.status === 404){
                 console.log('this election does not exist', this.props.election);
+            } else if(err.status === 304){
+                this.setState({ electionDataErr: 'No data'});
             }
-        });
+    });
     }
     componentDidMount(){
         this.fetchData();
@@ -49,6 +51,9 @@ export default class CandidateChart extends React.Component{
                 <Pie data={cdata}></Pie>
                 </div>
             } else {
+                if(this.state.electionDataErr){
+                    return <span>this.state.electionDataErr</span>;
+                }
                 return <img src={load} alt="Loading..." />;
             }
         }
@@ -67,7 +72,7 @@ export default class CandidateChart extends React.Component{
                 }
                 cdata.labels = candidates;
                 return <div>
-                    <h3>Female Voters</h3>
+                    <h4>Female Voters</h4>
                     <Pie data={cdata}></Pie>
                     </div>
             } else {
@@ -79,7 +84,7 @@ export default class CandidateChart extends React.Component{
             <Card className="mt shadow p-2">
                 <CardBody>
                     <CardTitle>
-                        <h2>Votes By Gender</h2>
+                        <h3>Votes By Gender</h3>
                     </CardTitle>
                     <Row>
                         <Col md={6} sm={12}>

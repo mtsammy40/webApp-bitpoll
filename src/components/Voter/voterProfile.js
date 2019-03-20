@@ -1,15 +1,39 @@
 import React from "react";
 import {Container, Card, CardBody, CardTitle, CardSubtitle, CardText, Button, Row, Col,
-ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap";
+ListGroup, ListGroupItem, ListGroupItemHeading, Modal, ModalBody, ModalHeader, ModalFooter} from "reactstrap";
 import load from '../../Images/load.gif';
 import '../../App.css';
 import Feed from "./feed";
+import {Redirect} from 'react-router-dom';
+import UpdateForm from './updater';
 export default class VoterProfile extends React.Component{
     constructor(props){
         super(props);
-        this.state = [];
+        this.state = {
+            UpdateProfileModal: false,
+        };
+        this.toggleUpdateProfile = this.toggleUpdateProfile.bind(this);
     }
+    toggleUpdateProfile(){
+        this.setState(prevState => ({
+            UpdateProfileModal: !prevState.UpdateProfileModal
+          }));
+      }
     render(){
+        if(this.props.profile){
+            switch(this.props.profile.$class){
+                case 'org.bitpoll.net.Admin':
+                    return <Redirect to="/IDashboard" />;
+                case 'org.bitpoll.net.Regulator':
+                    return <Redirect to="/RegulatorDashboard" />;
+                case 'NetworkAdmin':
+                    console.log('Shida ni??', this.props.profile)
+                    return <Redirect to="/IDashboard" />;
+                default:
+            }
+            var myDetails = this.props.profile;
+        }
+        
         const ProfileCard = ()=>{
             if(!this.props.profile){
                return <Card className="shadow mt">
@@ -29,7 +53,17 @@ export default class VoterProfile extends React.Component{
                          <ListGroupItem>ID: {this.props.profile.id}</ListGroupItem>
                          <ListGroupItem>Nationality: {this.props.profile.nationality}</ListGroupItem>
                      </ListGroup>
-                    <Button>Edit</Button>
+                    <Button onClick={this.toggleUpdateProfile}>Edit</Button>
+                    <Modal isOpen={this.state.UpdateProfileModal} toggle={this.toggleUpdateProfile} className={this.props.className}>
+          <ModalHeader toggle={this.toggleUpdateProfile}>Update Details</ModalHeader>
+          <ModalBody>
+              <UpdateForm profile={this.props.profile}></UpdateForm>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>{' '}
+            <Button color="secondary" onClick={this.toggleUpdateProfile}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
                 </CardBody>
                 </Card>
             }
@@ -40,7 +74,8 @@ export default class VoterProfile extends React.Component{
             } else {
 
             }
-        }
+            if(this.props.profile){
+    }}
         return(
             <div className="wrapper">
                  <Container >
@@ -50,10 +85,7 @@ export default class VoterProfile extends React.Component{
                                 <Col md={12}>
                                     <ProfileCard></ProfileCard>
                                 </Col>
-                                <Col md={12}>
-                                    <Feed></Feed>
-                                </Col>
-                            </Row>   
+                            </Row>
                         </Col>
                         <Col md={{size:4}}>
                             <Card className="shadow mt br-10">
@@ -66,6 +98,11 @@ export default class VoterProfile extends React.Component{
                             </Card>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col sm={12} md={12}>
+                            <Feed profile = {this.props.profile}></Feed>
+                        </Col>
+                    </Row>   
             </Container>
             </div>
            
