@@ -35,9 +35,6 @@ Table{
   display: table-cell;
   vertical-align: middle;
 }
-.brad{
-  border-radius: 20px;
-}
 
 /*--------- Dashboard css ---------*/
 .sidebar {
@@ -58,7 +55,7 @@ Table{
   background-color: #04D4F0;
   padding: 8px;
   text-decoration-style: none;
-  border-radius: 20px;
+  
   margin: 10px;
   transition: all 0.3s ease-in-out;
 }
@@ -113,23 +110,17 @@ Table{
 .br-10{
   border-radius: 10px;
 }
-.br-20{
-  border-radius: 20px;
-}
 .card, .card-footer{
-  border-radius : 30px;
   padding: 10px;
   background-color: var(--secondary-fg); 
   border: none;
 }
 .card.title, .card-header{
-  border-radius : 30px 30px 0 0;
   padding: 10px;
   background-color: var(--secondary-fg); 
   border: none; 
 }
 .modal-content{
-  border-radius : 30px;
   padding: 10px;
   background-color: var(--secondary-fg);
   background-image: linear-gradient(90deg, var(--secondary-bg), var(--secondary-fg));
@@ -139,7 +130,7 @@ Table{
   border: none;
 }
 .btn{
-  border-radius: 20px;
+  
   box-shadow: none;
  
 }
@@ -153,19 +144,23 @@ Table{
   display: none;
 }
 input[type=text], [type=date], [type=select], [type=number], [type=email], select{
-  border-radius: 20px;
+  
   background-color: var(--main-fg);
   border: transparent;
   transition: all 0.2s ease-in;
 }
 .form-control select{
-  border-radius: 20px;
+  
   background-color: var(--secondary-bg);
   border: transparent;
   transition: all 0.2s ease-in;
 }
+input{
+  border: none;
+  padding: 2px;
+}
 input[type=text]:disabled, [type=date]:disabled, [type=select]:disabled, [type=number]:disabled, [type=email]:disabled{
-  border-radius: 20px;
+  
   background: var(--main-bg);
   border: transparent;
   color: var(--secondary-bg);
@@ -174,43 +169,58 @@ input:disabled:hover{
   box-shadow: none;
 }
 input:hover{
-  border-radius: 20px;
+  
   box-shadow: 2px 2px 10px white;
   background-color: var(--main-color);
   border: transparent;
   font-size: 1.15em;
 }
 input:focus{
-  border-radius: 20px;
+  
   box-shadow: 2px 2px 10px white;
   background-color: var(--main-color);
   font-size: 1.15em;
   color: var(--secondary-bg);
 }
 input:disabled{
-  border-radius: 20px;
+  
   background-color: var(--main-bg);
   color: var(--secondary-fg);
 }
-.list-group-item:first-child{
-  border-radius: 20px 20px 0 0;
-}
-.list-group-item:last-child{
-  border-radius: 0 0 20px 20px;
-}
 .card img{
-  border-radius: 20px;
+  
   margin: 0;
 }
 .card{
   padding: 0;
 }
-.prof{
-  position: relative;
-}
 .profile{
-  height: 30%;
   align-self: center;
   background-image: url('./Images/profile.jpg');
   background-size: cover;
+}
+.form-group select{
+  background: var(--main-fg);
+  border: none;
+
+}
+.form-group select:hover{
+  box-shadow: 2px 2px 10px white;
+  background-color: var(--main-color);
+  border: transparent;
+  font-size: 1.15em;
+}
+.form-group select:focus{  
+    box-shadow: 2px 2px 10px white;
+    background-color: var(--main-color);
+    font-size: 1.15em;
+    color: var(--secondary-bg);
+}
+.bg-sec{
+  background-image: linear-gradient(-90deg, var(--main-bg), var(--secondary-bg));
+  color: white;
+  font-size: 2.5em; 
+}
+.capitalize{
+  text-transform: capitalize;
 }

@@ -45,6 +45,16 @@ export default class ElectionCard extends React.Component{
             } else {
                 alert(res.data);
             }
+            var voter ={
+                voter: 'resource:org.bitpoll.net.Voter#'+this.props.profile.id,
+                election : 'resource:org.bitpoll.net.Election#'+this.state.election.electionId
+            }
+            console.log('voter is.... Recording', voter);
+            Api.post('org.bitpoll.net.RecordVoted', voter, {withCredentials: true}).then(resp=>{
+                console.log('recorded');
+            }).catch(e=>{
+                console.log('error recording vote', e);
+            })
             return vote;
         }).then(res=>{
             var vote = {
@@ -118,19 +128,6 @@ export default class ElectionCard extends React.Component{
         this.ws.onopen = ()=>{
             console.log('WebSockets is a go-go-go');
         }
-     /*    this.ws.onmessage = (e)=> {
-            const event = JSON.parse(e.data);
-            var candidate = event.candidate;
-            var candidateName = this.state.candidates.find(cand =>  cand.candidateId === candidate.split('#').pop());
-            console.log('candidate name', candidateName );
-            var index = this.state.chartData.labels.indexOf(candidateName.name);
-            console.log('Cand index ', index );
-            var chartData = this.state.chartData;
-            console.log('to change', chartData.datasets[0].data[index]);
-            chartData.datasets[0].data[index] = event.count;
-            this.setState({ chartData });
-            console.log("chart done", this.state.chartData);
-        } */
     }
 
     componentWillReceiveProps(){

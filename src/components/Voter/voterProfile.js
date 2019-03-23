@@ -69,13 +69,17 @@ export default class VoterProfile extends React.Component{
             }
         }
         const Summary = ()=>{
-            if(!this.state.summary){
+            if(!this.props.profile){
                 return <img src={load} alt="Loading..." width="100%" height="200"/>
             } else {
-
+                if(this.props.profile.hist){
+                    var hist = this.props.profile.hist.length;
+                } else {
+                    var hist = 0
+                }
+                return <span className="d-flex justify-content-between">Elections I have Voted in: <span>{hist}</span></span>
             }
-            if(this.props.profile){
-    }}
+        }
         return(
             <div className="wrapper">
                  <Container >

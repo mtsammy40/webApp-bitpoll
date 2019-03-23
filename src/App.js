@@ -20,6 +20,7 @@ import DumbFeed from './components/dumbFeed';
 import VoterProfile from './components/Voter/voterProfile';
 import CheckLogin from './components/checkLogin';
 import PdfView from './components/Admin/pdf';
+import NotFound from './components/NotFound';
 
 
 class App extends Component {
@@ -99,9 +100,13 @@ class App extends Component {
         }
         console.log('setting profile');
         this.setState({ profile });
+        var loggedIn = true; 
+        this.setState({ loggedIn});
       } else {
         Api.get('org.bitpoll.net.'+rtype[0]+'/'+id, {withCredentials: true}).then(res=>{
           this.setState({ profile : res.data });
+          var loggedIn = true; 
+          this.setState({ loggedIn});
         }).catch(err=>{
           console.log('getting profile err', err);
         });
@@ -120,6 +125,8 @@ class App extends Component {
       } else if(err.response && err.response.status === 401){
         console.log('Not logged in', err.response.status);
         this.setState({ authorized: false});
+        var loggedIn = false; 
+        this.setState({ loggedIn});
       }
     })
   }
@@ -141,18 +148,19 @@ class App extends Component {
             <Route exact path="/" component={Header} />
             <Route exact path="/Feed" component={Feed} />
             <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>
-            <Route path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} authorized={this.state.authorized} profile={this.state.profile}/>}  />
-            <Route path="/Dashboard" component={Dashboard} />
+            <Route exact path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} authorized={this.state.authorized} profile={this.state.profile}/>}  />
+            <Route exact path="/Dashboard" component={Dashboard} />
             <Route path="/newAdmin" component={newAdmin} />
             <Route path="/chart" component={ResultsBar} />
             <Route path="/newElection" component={newElection} />
             <Route path="/LoggingIn" render={(props)=><CheckLogin {...props} authorized={this.state.authorized} profile={this.state.profile}/>} />
             <Route path="/modal/" component={Modaly} />
-            <Route path="/IDashboard" render={(props)=><IDashboard {...props} profile={this.state.profile}/>} />
-            <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} type={this.state.typist} profile={this.state.profile}/>} />
+            <Route path="/IDashboard" render={(props)=><IDashboard {...props} authorized={this.state.authorized} profile={this.state.profile}/>} />
+            <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} authorized={this.state.authorized} type={this.state.typist} profile={this.state.profile}/>} />
             <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
-            <Route path="/VoterProfile" render={(props)=><VoterProfile {...props} profile={this.state.profile} />} />
-            <Route path="/vote/:id"  render={(props)=><ElectionCard {...props} profile={this.state.profile} elections={this.state.elections}/>} />
+            <Route path="/VoterProfile" render={(props)=><VoterProfile authorized={this.state.authorized} {...props} profile={this.state.profile} />} />
+            <Route path="/vote/:id"  render={(props)=><ElectionCard authorized={this.state.authorized} {...props} profile={this.state.profile} elections={this.state.elections}/>} />
+            <Route component={NotFound} />
           </Switch>
         </div>
       </div>

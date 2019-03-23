@@ -34,7 +34,7 @@ export default class CheckLogin extends React.Component{
               }
               var noCard = false;
             this.setState({noCard});
-            apis.post('wallet/'+this.state.file.name+'/setDefault', {withCredentials: true}).then(res=>{
+            apis.post('wallet/'+this.state.file.name+'/setDefault', {}, {withCredentials: true}).then(res=>{
                 console.log('default set', res);
                 apis.get('system/ping', {withCredentials: true}).then(res =>{
                     console.log('starting verification');
@@ -56,6 +56,8 @@ export default class CheckLogin extends React.Component{
                     }).catch(e=>{
                         console.log('error deleting', e.response);
                     });
+                } else if(err.response && err.response.status === 401){
+                    alert("Please make sure your credentials are okay,  Then try again.")
                 }  
             });
         }).catch(err=>{
@@ -97,9 +99,9 @@ export default class CheckLogin extends React.Component{
                 var authorized = true;
                 this.setState({ authorized });
             }
-            /* if(!this.state.authorized){
+            if(this.state.authorized=== false){
                 return <Redirect to="/SignIn" />
-            }  */
+            }  
             if(this.state.noCard){
                 console.log('noCard', this.state.noCard)
             } else {

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Container, Modal, ModalBody, ModalFooter, ModalHeader, Table, Button, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap';
 import load from '../../Images/load.gif';
+var DataTable = require('react-data-components').DataTable;
+
 export default class MyAdmins extends React.Component{
     constructor(props){
         super(props);
@@ -83,10 +85,10 @@ export default class MyAdmins extends React.Component{
                 ;
             }
         }
-        
         return(
             <Container>
                 <AdminsTable Admins={this.props.Admins}></AdminsTable>
+                
             </Container>
         );
     }

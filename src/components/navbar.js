@@ -13,12 +13,15 @@ import {
   DropdownItem,
   Button } from 'reactstrap';
 import logolsm from '../Images/logoLSm.png';
+import Axios from 'axios';
+import {Redirect} from 'react-router-dom';
 
 export default class Navigation extends React.Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.logout.bind(this);
     this.state = {
       isOpen: false
     };
@@ -28,8 +31,19 @@ export default class Navigation extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
-  
+  logout(){
+    Axios.get('http://35.202.24.146:3002/auth/logout', {withCredentials: true})
+    .then(res=>{
+      console.log('logout', res);
+      var loggedOut = true;
+      this.setState({ loggedOut });
+    })
+    .catch(e=>console.error('this logout error', e));
+  }
   render() {
+    if(this.state.loggedOut){
+     return <Redirect to="/" />
+    }
     const Profile = () =>{
       if(!this.props.profile){
         return <Button href="/SignIn" outline color="success">Sign In</Button>
@@ -43,7 +57,7 @@ export default class Navigation extends React.Component {
                     <NavLink href="/Profile">{this.props.profile.email}</NavLink>
                     </DropdownItem>
                     <DropdownItem>
-                    <NavLink href="/Profile">Log Out</NavLink>
+                    <NavLink href="/Profile" onClick={e=>this.logout}>Log Out</NavLink>
                     </DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem>
@@ -53,7 +67,6 @@ export default class Navigation extends React.Component {
                 </UncontrolledDropdown>
       }
     }
-    
     return (
       <div>
         <Navbar color="light" light expand="md" className="zindex">
@@ -81,6 +94,9 @@ export default class Navigation extends React.Component {
               </NavItem>
               <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink onClick={e=>this.logout()}>logout</NavLink>
               </NavItem>
               <Profile></Profile>
             </Nav>

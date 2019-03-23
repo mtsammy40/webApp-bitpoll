@@ -21,7 +21,7 @@ export default class PendingAdmin extends React.Component{
         }).then((approved)=>{
             var issuee = {
                 participant: 'resource:org.bitpoll.net.Admin#'+ approved.id,
-                userID: approved.id,
+                userID: approved.name,
                 options: {"issuer" : true}
             };
             Api.post('system/identities/issue', issuee, {withCredentials: true, responseType: 'blob'}).then((res)=>{
@@ -35,7 +35,7 @@ export default class PendingAdmin extends React.Component{
                 .then(res=>{
                     console.log('apprroved id deep ', approved.id)
                     angel.post('approveAdmin/', {id: approved.id}).then((res)=>{
-                        alert("email sent and \n" + res);
+                        alert("An email has  sent to the Admin: \n"+approved.name);
                     }).catch(e=>{
                         console.log('alar email', e);
                     });
