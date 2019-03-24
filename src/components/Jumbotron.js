@@ -16,7 +16,7 @@ const Header = (props) => {
           <hr className="my-2" />
           <p>Here at Bitpoll, Your vote counts... Literally!</p>
           <p className="lead">
-            <Button color="primary" href="/feed/">View elections we have propelled</Button>
+            <Button color="primary" href="/DumbFeed/">View elections we have propelled</Button>
           </p>
         </Col>
         </Row>

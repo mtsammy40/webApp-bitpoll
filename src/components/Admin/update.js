@@ -176,7 +176,7 @@ export default class UpdateForm extends React.Component {
           </Col>
         </Row>
         <Row form>
-          <Col md={4}>
+          <Col md={6}>
             <FormGroup>
               <Label for="countytb">County</Label>
               <Input type="select" name="county" id="countytb" value={this.state.form.county} onChange={this.handleChange} required >
@@ -184,7 +184,7 @@ export default class UpdateForm extends React.Component {
               </Input>
             </FormGroup>
           </Col>
-          <Col md={4}>
+          <Col md={6}>
             <FormGroup>
               <Label for="poboxtb">National ID Number</Label>
               <Input type="text" name="id" id="idtb" value={this.state.form.id} onChange={this.handleChange} 

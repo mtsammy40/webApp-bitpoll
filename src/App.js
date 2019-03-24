@@ -158,6 +158,7 @@ class App extends Component {
             <Route path="/IDashboard" render={(props)=><IDashboard {...props} authorized={this.state.authorized} profile={this.state.profile}/>} />
             <Route path="/RegulatorDashboard" render={(props)=><RegDash {...props} authorized={this.state.authorized} type={this.state.typist} profile={this.state.profile}/>} />
             <Route path="/Profile" render={(props)=><Profile {...props} profile={this.state.profile} />} />
+            <Route path="/DumbFeed" render={(props)=><DumbFeed {...props} authorized={this.state.authorized} type={this.state.typist} profile={this.state.profile}/>} />
             <Route path="/VoterProfile" render={(props)=><VoterProfile authorized={this.state.authorized} {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard authorized={this.state.authorized} {...props} profile={this.state.profile} elections={this.state.elections}/>} />
             <Route component={NotFound} />

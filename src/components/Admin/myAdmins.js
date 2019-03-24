@@ -64,10 +64,10 @@ export default class MyAdmins extends React.Component{
                 return <tr><td>Loading Admins...</td></tr>
             } else {
                 var Adminslist = this.props.Admins.map(v =>       
-                    <tr key={v.id}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td className={this.props.showControls}><div>
-                        <Button outline color="danger" onClick={e=>this.onDeletee(v.id)}>Remove</Button>
+                    <tr key={v.id}><td>{v.email}</td><td>{v.name}</td><td>{v.nationality}</td><td>{v.gender}</td><td className={this.props.showControls}>
+                     <Button outline color="danger" onClick={e=>this.onDeletee(v.id)}>Remove</Button>
                    
-                </div></td></tr>
+                </td></tr>
                 );
                 return <Container>
                     <Table responsive>

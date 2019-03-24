@@ -90,6 +90,9 @@ export default class Navigation extends React.Component {
                 <NavLink href="/LoggingIn/">Logging In</NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/DumbFeed/">DumbFeed</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/RegulatorDashboard/">Reg Dashboard</NavLink>
               </NavItem>
               <NavItem>

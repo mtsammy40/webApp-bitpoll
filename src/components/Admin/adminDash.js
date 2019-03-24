@@ -29,6 +29,7 @@ import UpdateFormReg from './updateRegs';
 import DeleteRegM from './deleteRegm';
 import UpdateVoter from './updateVoter';
 import moment from 'moment';
+import DeleteVoter from './DeleteVoter';
 export default class IDashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -41,6 +42,7 @@ export default class IDashboard extends React.Component {
             pdfmodal: false,
             DeleteModal: false,
             DeleteRegModal: false,
+            DeleteVoterModal: false,
             UpdateProfileModal: false,
             UpdateProfile: {},
         };
@@ -70,6 +72,7 @@ export default class IDashboard extends React.Component {
         this.prepareUpdateVoter = this.prepareUpdateVoter.bind(this);
         this.toggleUpdateVoter = this.toggleUpdateVoter.bind(this);
         this.toggleDeleteReg = this.toggleDeleteReg.bind(this);
+        this.toggleDeleteVoter = this.toggleDeleteVoter.bind(this);
         this.search = this.search.bind(this);
     }
     toggleRefetch() {
@@ -98,6 +101,11 @@ export default class IDashboard extends React.Component {
     toggleDeleteReg() {
         this.setState(prevState => ({
             DeleteRegModal: !prevState.DeleteRegModal
+        }));
+    }
+    toggleDeleteVoter() {
+        this.setState(prevState => ({
+            DeleteVoterModal: !prevState.DeleteVoterModal
         }));
     }
     toggleSuccessModal() {
@@ -252,6 +260,11 @@ export default class IDashboard extends React.Component {
             alert("canot delete, check previledges");
             console.log('error in delete admin', e);
         });
+    }
+    onDeleteVoter(id){
+        var DeleteAVoter = this.state.Voters.find(v=>v.id === id);
+        this.setState({ DeleteAVoter });
+        this.toggleDeleteVoter();
     }
     componentWillMount() {
         this.fetchPAdmins();
@@ -459,7 +472,8 @@ export default class IDashboard extends React.Component {
             } else {
 
 
-                var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td><td><Button outline onClick={e => { this.prepareUpdateVoter(v.id) }} color="secondary">Update</Button></td></tr>)
+                var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td><td><Button outline onClick={e => { this.prepareUpdateVoter(v.id) }} color="secondary">Update</Button></td>
+                <td> <Button outline color="danger" onClick={e=>this.onDeleteVoter(v.id)}>Remove</Button></td></tr>)
                 var votersList2 = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td></tr>)
 
                 return <Container>
@@ -511,6 +525,15 @@ export default class IDashboard extends React.Component {
                             </Card>
                         </Col>
                     </Row>
+                    <Modal isOpen={this.state.DeleteVoterModal} toggle={this.toggleDeleteVoter} className={this.props.className}>
+                        <ModalHeader toggle={this.toggleDeleteVoter}>Are you sure you want to Delete this Voter?</ModalHeader>
+                        <ModalBody>
+                            <DeleteVoter profile={this.state.DeleteAVoter} onSuccess={() => { this.fetchVoters(); this.toggleDeleteVoter() }}></DeleteVoter>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="secondary" onClick={this.toggleDeleteVoter}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                     <Modal isOpen={this.state.UpdateVoterModal} size="lg" toggle={this.toggleUpdateVoter} className={this.props.className}>
                         <ModalHeader toggle={this.toggleUpdateVoter}>Update Data</ModalHeader>
                         <ModalBody>
