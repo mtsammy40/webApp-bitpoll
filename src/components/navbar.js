@@ -11,10 +11,11 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Button } from 'reactstrap';
+  Button
+} from 'reactstrap';
 import logolsm from '../Images/logoLSm.png';
 import Axios from 'axios';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 export default class Navigation extends React.Component {
   constructor(props) {
@@ -31,40 +32,66 @@ export default class Navigation extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
-  logout(){
-    Axios.get('http://35.202.24.146:3002/auth/logout', {withCredentials: true})
-    .then(res=>{
-      console.log('logout', res);
-      var loggedOut = true;
-      this.setState({ loggedOut });
-    })
-    .catch(e=>console.error('this logout error', e));
+  logout() {
+    Axios.get('http://35.202.24.146:3002/auth/logout', { withCredentials: true })
+      .then(res => {
+        console.log('logout', res);
+        var loggedOut = true;
+        this.setState({ loggedOut });
+      })
+      .catch(e => console.error('this logout error', e));
   }
   render() {
-    if(this.state.loggedOut){
-     return <Redirect to="/" />
+    if (this.state.loggedOut) {
+      return <Redirect to="/" />
     }
-    const Profile = () =>{
-      if(!this.props.profile){
+    const Specialized = () => {
+      if(this.props.profile){
+
+        switch (this.props.profile.$class) {
+          case 'org.bitpoll.net.Voter':
+            return <span> <NavItem>
+              <NavLink href="/VoterProfile/">Voter</NavLink>
+            </NavItem>
+              <NavItem>
+                <NavLink href="/Feed/">Feed</NavLink>
+              </NavItem>
+            </span>
+          case 'org.bitpoll.net.Admin':
+            return <div>
+              <NavItem>
+                <NavLink href="/IDashboard/">Dashboard</NavLink>
+              </NavItem>
+            </div>
+          case 'org.bitpoll.net.Regulator':
+            return <div>
+              <NavItem>
+                <NavLink href="/RegulatorDashboard/">Reg Dashboard</NavLink>
+              </NavItem>
+            </div>
+          default:
+        }
+        }else{
+          return  <NavItem>
+          <NavLink>Loading Nav Items...</NavLink>
+        </NavItem>
+      }
+      
+    }
+    const Profile = () => {
+      if (!this.props.profile) {
         return <Button href="/SignIn" outline color="success">Sign In</Button>
       } else {
         return <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret>
-                    Profile
+          <DropdownToggle nav caret>
+            Profile
                   </DropdownToggle>
-                  <DropdownMenu right>
-                    <DropdownItem>
-                    <NavLink href="/Profile">{this.props.profile.email}</NavLink>
-                    </DropdownItem>
-                    <DropdownItem>
-                    <NavLink href="/Profile" onClick={e=>this.logout}>Log Out</NavLink>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>
-                      Reset
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
+          <DropdownMenu right>
+            <DropdownItem>
+              <NavLink href="/" onClick={e => this.logout}>Log Out</NavLink>
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
       }
     }
     return (
@@ -77,31 +104,22 @@ export default class Navigation extends React.Component {
               <NavItem>
                 <NavLink href="/SignIn/">Sign In</NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink href="/Feed/">Feed</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/IDashboard/">Dashboard</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/VoterProfile/">Voter</NavLink>
-              </NavItem>
+              
               <NavItem>
                 <NavLink href="/LoggingIn/">Logging In</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/DumbFeed/">DumbFeed</NavLink>
+                <NavLink href="/DumbFeed/">General Feed</NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink href="/RegulatorDashboard/">Reg Dashboard</NavLink>
-              </NavItem>
+
               <NavItem>
                 <NavLink href="https://github.com/mtsammy40">GitHub</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink onClick={e=>this.logout()}>logout</NavLink>
+                <NavLink onClick={e => this.logout()}>logout</NavLink>
               </NavItem>
               <Profile></Profile>
+              <Specialized></Specialized>
             </Nav>
           </Collapse>
         </Navbar>

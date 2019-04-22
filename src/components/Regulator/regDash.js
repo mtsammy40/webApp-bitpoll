@@ -263,6 +263,9 @@ export default class RegDash extends React.Component{
         let countriesList = [];
         let Insts;
         let myAdmin = {'id': 'default'};
+        if(this.props.authorized === false){
+            return <Redirect to="/SignIn" />
+        }
         if(!this.state.Insts){
             Insts = ["ota"];
         } else {

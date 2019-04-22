@@ -30,7 +30,7 @@ export default class NewInst extends React.Component {
   render() {
     return (
       <Container>
-        <h2> New Institution</h2>
+        <h2>New Institution</h2>
         <Form onSubmit={this.handleSubmit}>
           <Row form>
             <Col md={6}>
@@ -42,7 +42,7 @@ export default class NewInst extends React.Component {
             <Col md={6}>
               <FormGroup>
                 <Label for="emailtb"> Id</Label>
-                <Input type="text" name="id" id="emailtb" placeholder="parastatal Id" onChange={this.handleChange} />
+                <Input type="text" name="id" id="emailtb" placeholder="Institution Id" onChange={this.handleChange} />
               </FormGroup>
             </Col>
             </Row>

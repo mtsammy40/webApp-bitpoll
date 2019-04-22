@@ -67,6 +67,7 @@ export default class UpdateVoter extends React.Component {
         break;
     }
   }
+  
   handleChange(e) {
     this.validate(e);
     let { form } = this.state;
@@ -225,7 +226,7 @@ export default class UpdateVoter extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Input type="submit" value="Sign up" className="btn btn-success" />
+            <Input type="submit" value="Update" className="btn btn-success" />
           </Row>
         </Form>
 

@@ -30,6 +30,9 @@ import DeleteRegM from './deleteRegm';
 import UpdateVoter from './updateVoter';
 import moment from 'moment';
 import DeleteVoter from './DeleteVoter';
+import NewInst from './newInstitution';
+import MyInstitutions from './myInstitutions';
+import DeleteElec from './DeleteElection';
 export default class IDashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -74,10 +77,18 @@ export default class IDashboard extends React.Component {
         this.toggleDeleteReg = this.toggleDeleteReg.bind(this);
         this.toggleDeleteVoter = this.toggleDeleteVoter.bind(this);
         this.search = this.search.bind(this);
+        this.onDeleteInst = this.onDeleteInst.bind(this);
+        this.toggleDeleteElec = this.toggleDeleteElec.bind(this);
+        this.onDeleteElec = this.onDeleteElec.bind(this);
     }
     toggleRefetch() {
         this.setState(prev => ({
             reFetch: !prev.reFetch
+        }));
+    }
+    toggleDeleteElec(){
+        this.setState(prev => ({
+            DeleteElectionModal: !prev.DeleteElectionModal
         }));
     }
     pdftoggle() {
@@ -148,6 +159,23 @@ export default class IDashboard extends React.Component {
             console.log('prevstate', this.state.UpdateReg);
             this.toggleUpdateReg();
         });
+    }
+    onDeleteInst(id) {
+        Api.delete('org.bitpoll.net.Institution/' + id, { withCredentials: true }).then(res => {
+            this.fetchRegs();
+            var SuccessMessage = "Institution Successfuly Deleted";
+            this.setState({ SuccessMessage });
+        }).catch(e => {
+            alert("canot delete, check previledges");
+            console.log('error in delete admin', e);
+        });
+    }
+    onDeleteElec(id){
+        var DeleteAnElec = this.state.Elections.find(r => {
+            return r.electionid === id;
+        }); 
+        this.setState({ DeleteAnElec});
+        this.toggleDeleteElec();
     }
     prepareUpdateVoter(id) {
         var UpdateVoter = this.state.Voters.find(r => {
@@ -261,8 +289,8 @@ export default class IDashboard extends React.Component {
             console.log('error in delete admin', e);
         });
     }
-    onDeleteVoter(id){
-        var DeleteAVoter = this.state.Voters.find(v=>v.id === id);
+    onDeleteVoter(id) {
+        var DeleteAVoter = this.state.Voters.find(v => v.id === id);
         this.setState({ DeleteAVoter });
         this.toggleDeleteVoter();
     }
@@ -401,6 +429,9 @@ export default class IDashboard extends React.Component {
         }
     }
     render() {
+       /*  if(this.props.authorized === false){
+           return <Redirect to="/SignIn" />
+        } */
         let myDetails = this.props.profile;
         let countriesList = [];
         let Insts;
@@ -470,12 +501,9 @@ export default class IDashboard extends React.Component {
             if (!this.state.Voters) {
                 return <img src={Load} alt="loading..."></img>
             } else {
-
-
                 var votersList = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td><td><Button outline onClick={e => { this.prepareUpdateVoter(v.id) }} color="secondary">Update</Button></td>
-                <td> <Button outline color="danger" onClick={e=>this.onDeleteVoter(v.id)}>Remove</Button></td></tr>)
+                    <td> <Button outline color="danger" onClick={e => this.onDeleteVoter(v.id)}>Remove</Button></td></tr>)
                 var votersList2 = this.state.Voters.map(v => <tr><td>{v.name}</td><td>{v.gender}</td><td>{v.id}</td><td>{v.dob}</td></tr>)
-
                 return <Container>
                     <Row>
                         <Col md={12}>
@@ -493,7 +521,7 @@ export default class IDashboard extends React.Component {
                                 <CardBody>
                                     <CardTitle>Voters</CardTitle>
                                     <Row>
-                                    <Input type="text" placeholder="search" name="Search by Name" id="searchVoters" onChange={e=>this.search("searchVoters", "votert", 0)} />
+                                        <Input type="text" placeholder="search" name="Search by Name" id="searchVoters" onChange={e => this.search("searchVoters", "votert", 0)} />
                                         <Table id="votert" responsive>
                                             <tr>
                                                 <th>Name</th>
@@ -573,16 +601,16 @@ export default class IDashboard extends React.Component {
                     <tr key={R.id}><td>{R.id}</td><td>{R.name}</td><td>{R.email}</td><td>{R.address}</td><td><button className="btn btn-secondary" onClick={e => { this.prepareUpdateReg(R.id) }}>Edit</button></td><td><button className="btn btn-danger" onClick={e => { this.prepareDeleteReg(R.id) }}>Remove</button></td></tr>
                 );
                 return <div>
-                     <Input type="text" placeholder="search" name="Search by Name" id="searchRegs" onChange={e=>this.search("searchRegs", "regt", 1)} />
+                    <Input type="text" placeholder="search" name="Search by Name" id="searchRegs" onChange={e => this.search("searchRegs", "regt", 1)} />
                     <Table id="regt" responsive>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
-                    <tbody>{Regslist}</tbody>
-                </Table>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Edit</th>
+                        <th>Remove</th>
+                        <tbody>{Regslist}</tbody>
+                    </Table>
                     <Modal isOpen={this.state.UpdateRegModal} toggle={this.toggleUpdateReg} className={this.props.className}>
                         <ModalHeader toggle={this.toggleUpdateReg}>Update Data</ModalHeader>
                         <ModalBody>
@@ -684,24 +712,29 @@ export default class IDashboard extends React.Component {
             if (!this.state.Elections) {
                 return <span className="d-flex jussearchElecstify-content-center"><img src={Load} alt="Loading..." height="200px" /></span>
             } else {
-                var electionslist = this.state.Elections.map(e =>{
+                var electionslist = this.state.Elections.map(e => {
                     var start = moment(e.start.split('T')[0]).format('YYYY-MM-DD');
-                    var end = moment( e.end.split('T')[0]).format('YYYY-MM-DD')
+                    var end = moment(e.end.split('T')[0]).format('YYYY-MM-DD')
                     var today = moment().format('YYYY-MM-DD');
-                    console.log(start + ' '+end+' '+today)
-                    var badge;
-                    if(start > today){
-                       badge =  <Badge color="primary">Future</Badge>
-                    } else if(end < today){
+                    console.log(start + ' ' + end + ' ' + today)
+                    var badge; var deleter;
+                    if (start > today) {
+                        badge = <Badge color="primary">Future</Badge>
+                        deleter = <Button color="danger" className={props.showControls} onClick={e=>{this.onDeleteElec(e.electionId)}}>Delete</Button>
+                    } else if (end < today) {
                         badge = <Badge color="danger">Past</Badge>
-                    } else if (start <= today && end >= today){
+                        deleter = <Button color="danger" className={props.showControls} onClick={e=>{this.onDeleteElec(e.electionId)}} disabled>Delete</Button>
+                    } else if (start <= today && end >= today) {
                         badge = <Badge color="success">Ongoing</Badge>
+                        deleter = <Button color="danger" className={props.showControls} onClick={e=>{this.onDeleteElec(e.electionId)}} disabled>Delete</Button>
                     }
                     if (e.start)
-                    return <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{start}</td><td>{end}</td><td>{badge}</td><td className={props.showControls}>  <Button onClick={(ev) => { this.getCandidatesByElection(e.electionId) }}>View Candidates</Button><ViewCandidates elec={e.electionId}></ViewCandidates></td></tr>}
+                        return <tr key={e.electionId}><td>{e.electionId}</td><td>{e.motion}</td><td>{start}</td><td>{end}</td><td>{badge}</td><td className={props.showControls}>  <Button onClick={(ev) => { this.getCandidatesByElection(e.electionId) }}>View Candidates</Button>
+                        <ViewCandidates elec={e.electionId}></ViewCandidates></td><td>{deleter}</td></tr>
+                }
                 );
                 return <Container>
-                    <Input className={props.showControls} type="text" placeholder="search" name="Search by Motion" id="searchElecs" onChange={e=>this.search("searchElecs", "elect", 1)} />
+                    <Input className={props.showControls} type="text" placeholder="search" name="Search by Motion" id="searchElecs" onChange={e => this.search("searchElecs", "elect", 1)} />
                     <Table id="elect" responsive>
                         <th>Id</th>
                         <th>Motion</th>
@@ -711,6 +744,15 @@ export default class IDashboard extends React.Component {
                         <th className={props.showControls}>View Details</th>
                         <tbody>{electionslist}</tbody>
                     </Table>
+                    <Modal isOpen={this.state.DeleteElectionModal} toggle={this.toggleDeleteElec} className={this.props.className}>
+                        <ModalHeader toggle={this.toggleDeleteElec}>Are you sure you want to Delete this Election?</ModalHeader>
+                        <ModalBody>
+                            <DeleteElec profile={this.state.DeleteAnElec} onSuccess={() => { this.fetchElections(); this.toggleDeleteElec() }}></DeleteElec>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="secondary" onClick={this.toggleDeleteElec}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </Container>
 
 
@@ -786,20 +828,15 @@ export default class IDashboard extends React.Component {
                         <PdfView>
                             <div className="d-flex flex-column">
                                 <div className="d-flex flex-column justify-content-center">
-                                    <span className="d-flex justify-content-center">For {props.for}</span>
+                                    <span className="d-flex justify-content-center"></span>
                                     <span><h2>{props.title}</h2></span>
                                     <div>
                                         {props.children}
                                     </div>
                                 </div>
-                                <div className="align-self-baseline justify-content-center">
-                                    MIMI
-                        </div>
-
+                                <div className="align-self-baseline">
+                                </div>
                             </div>
-
-
-
                         </PdfView>
                     </ModalBody>
                     <ModalFooter>
@@ -954,6 +991,7 @@ export default class IDashboard extends React.Component {
                         <a href={`${this.props.match.url}/Elections/`}>Elections</a>
                         <a href={`${this.props.match.url}/Regulators/`}>Regulators</a>
                         <a href={`${this.props.match.url}/Voters/`}>Voters</a>
+                        <a href={`${this.props.match.url}/Institutions/`}>Institutions</a>
                     </div>
                 </div>
                 <div className="content-wrapper">
@@ -977,7 +1015,33 @@ export default class IDashboard extends React.Component {
                                 <Col md={12}>
                                     <Card className="shadow mt">
                                         <CardBody>
-                                            <NewReg></NewReg>
+                                            <NewReg onSuccess={this.fetchRegs}></NewReg>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </Container>} />
+                    <Route exact path={`${this.props.match.url}/Institutions`} render={(props) =>
+                        <Container>
+                            <Row>
+                                <Col md={12}>
+                                    <Card className="shadow mt">
+                                        <CardBody>
+                                            <CardTitle>
+                                                <h2>My Institutions</h2>
+                                            </CardTitle>
+                                            <MyInstitutions Institutions={this.state.Insts} onDeleteInst={this.onDeleteInst}></MyInstitutions>
+                                            <Button outline block color="primary" onClick={this.pdftoggle}>PDF</Button>
+                                            <PdfComp title={"Admins List"} for={profs.name}><MyInstitutions Institutions={this.state.Insts} onDeleteInst={this.onDeleteInst} showControls="hidden"></MyInstitutions></PdfComp>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={12}>
+                                    <Card className="shadow mt">
+                                        <CardBody>
+                                            <NewInst></NewInst>
                                         </CardBody>
                                     </Card>
                                 </Col>

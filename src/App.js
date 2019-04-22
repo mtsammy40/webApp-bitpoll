@@ -21,6 +21,7 @@ import VoterProfile from './components/Voter/voterProfile';
 import CheckLogin from './components/checkLogin';
 import PdfView from './components/Admin/pdf';
 import NotFound from './components/NotFound';
+import DumbResults from './components/DumbResults';
 
 
 class App extends Component {
@@ -146,7 +147,7 @@ class App extends Component {
           <Switch>
           <Route exact path="/pdf" component={PdfView} />
             <Route exact path="/" component={Header} />
-            <Route exact path="/Feed" component={Feed} />
+            <Route exact path="/Feed" render={(props)=><Feed {...props} authorized = {this.state.authorized} elections={this.state.elections}/> }/>
             <Route path="/DumbFeed/:id" render={(props)=><DumbFeed {...props} elections={this.state.elections}/> }/>
             <Route exact path="/SignIn" render={(props)=><SignIn {...props} handleLogin = {this.handleLogin} authorized={this.state.authorized} profile={this.state.profile}/>}  />
             <Route exact path="/Dashboard" component={Dashboard} />
@@ -161,6 +162,7 @@ class App extends Component {
             <Route path="/DumbFeed" render={(props)=><DumbFeed {...props} authorized={this.state.authorized} type={this.state.typist} profile={this.state.profile}/>} />
             <Route path="/VoterProfile" render={(props)=><VoterProfile authorized={this.state.authorized} {...props} profile={this.state.profile} />} />
             <Route path="/vote/:id"  render={(props)=><ElectionCard authorized={this.state.authorized} {...props} profile={this.state.profile} elections={this.state.elections}/>} />
+            <Route path="/DumbResults/:id"  render={(props)=><DumbResults authorized={this.state.authorized} {...props} profile={this.state.profile} elections={this.state.elections}/>} />
             <Route component={NotFound} />
           </Switch>
         </div>

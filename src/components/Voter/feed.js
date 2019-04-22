@@ -4,7 +4,9 @@ import {
     CardSubtitle, CardBody, CardFooter, Container, Badge, ListGroup, ListGroupItem,
     Row, Col
 } from 'reactstrap';
+import {Redirect }from 'react-router-dom';
 import Api from '../../api/api';
+import GeneralFeed from './general';
 
 export default class Feed extends React.Component {
     constructor(props) {
@@ -30,6 +32,10 @@ export default class Feed extends React.Component {
         });
     }
     render() {
+            if(this.props.authorized === false){
+                return <Redirect to="/SignIn" />
+            }
+        
         let feedlist;
         let histlist;
         let Pfeeds; let Pfeedslist;//Past feeds
@@ -68,7 +74,6 @@ export default class Feed extends React.Component {
                 } else if (Ffeeds.length > 0) {//if it is an array
                     Ffeedslist = Ffeeds.map((feed) =>
                         <Card key={feed.electionId} className="shadow mt">
-                            <CardImg top width="100%" src={feed.img} alt="Card image cap" />
                             <CardBody>
                                 <CardTitle><h2>{feed.motion}</h2></CardTitle>
                                 <CardText className="shadow mt br-20">
@@ -83,7 +88,6 @@ export default class Feed extends React.Component {
                     );
                 } else {
                     Ffeedslist = <Card key={Ffeeds.electionId} className="shadow mt">
-                        <CardImg top width="100%" src={Ffeeds.img} alt="Card image cap" />
                         <CardBody>
                             <CardTitle><h2>{Ffeeds.motion}</h2></CardTitle>
                             <CardText className="shadow mt br-20">
@@ -111,7 +115,6 @@ export default class Feed extends React.Component {
                 } else if (Pfeeds.length > 0) {//if it is an array
                     Pfeedslist = Pfeeds.map((feed) =>
                         <Card key={feed.electionId} className="shadow mt">
-                            <CardImg top width="100%" src={feed.img} alt="Card image cap" />
                             <CardBody>
                                 <CardTitle><h2>{feed.motion}</h2></CardTitle>
                                 <CardText className="shadow mt br-20">
@@ -120,7 +123,7 @@ export default class Feed extends React.Component {
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feed.start.split('T')[0]}</Badge></ListGroupItem>
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feed.end.split('T')[0]}</Badge></ListGroupItem>
                                     </ListGroup></CardText>
-                                <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feed.electionId}>View Election results</Button>
+                                <Button color='success' className="shadow" outline block href={"/DumbResults/" + feed.electionId}>View Election results</Button>
                             </CardBody>
                             <CardFooter><Badge color="danger" className="shadow" >Past</Badge></CardFooter>
                         </Card>
@@ -128,7 +131,6 @@ export default class Feed extends React.Component {
                 } else {
                     console.log('PFEEDS', Pfeeds);
                     Pfeedslist = <Card key={Pfeeds.electionId} className="shadow mt">
-                        <CardImg top width="100%" src={Pfeeds.img} alt="Card image cap" />
                         <CardBody>
                             <CardTitle><h2>{Pfeeds.motion}</h2></CardTitle>
                             <CardText className="shadow mt br-20">
@@ -137,7 +139,7 @@ export default class Feed extends React.Component {
                                     <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{Pfeeds.start.split('T')[0]}</Badge></ListGroupItem>
                                     <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{Pfeeds.end.split('T')[0]}</Badge></ListGroupItem>
                                 </ListGroup></CardText>
-                            <Button color='success' className="shadow" outline block href={"/DumbFeed/" + Pfeeds.electionId}>View Election results</Button>
+                            <Button color='success' className="shadow" outline block href={"/DumbResults/" + Pfeeds.electionId}>View Election results</Button>
                         </CardBody>
                         <CardFooter><Badge color="danger" className="shadow" >Past</Badge></CardFooter>
                     </Card>
@@ -195,7 +197,7 @@ export default class Feed extends React.Component {
                                             <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feed.start.split('T')[0]}</Badge></ListGroupItem>
                                             <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feed.end.split('T')[0]}</Badge></ListGroupItem>
                                         </ListGroup></CardText>
-                                    <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feed.electionId}>View Election results</Button>
+                                    <Button color='success' className="shadow" outline block href={"/DumbResults/" + feed.electionId}>View Election results</Button>
                                     <Button color='primary' className="shadow" outline block href={"/vote/" + feed.electionId}>Go to election</Button>
                                 </CardBody>
                                 <CardFooter><Badge color="success" className="shadow" >Ongoing</Badge></CardFooter>
@@ -220,7 +222,7 @@ export default class Feed extends React.Component {
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feedsUnvoted.start.split('T')[0]}</Badge></ListGroupItem>
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feedsUnvoted.end.split('T')[0]}</Badge></ListGroupItem>
                                     </ListGroup></CardText>
-                                <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feedsUnvoted.electionId}>View Election results</Button>
+                                <Button color='success' className="shadow" outline block href={"/DumbResults/" + feedsUnvoted.electionId}>View Election results</Button>
                                 <Button color='primary' className="shadow" outline block href={"/vote/" + feedsUnvoted.electionId}>Go to election</Button>
                             </CardBody>
                             <CardFooter><Badge color="success" className="shadow" >Ongoing</Badge></CardFooter>
@@ -257,7 +259,7 @@ export default class Feed extends React.Component {
                                     <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feeds.start.split('T')[0]}</Badge></ListGroupItem>
                                     <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feeds.end.split('T')[0]}</Badge></ListGroupItem>
                                 </ListGroup></CardText>
-                            <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feeds.electionId}>View Election results</Button>
+                            <Button color='success' className="shadow" outline block href={"/DumbResults/" + feeds.electionId}>View Election results</Button>
                         </CardBody>
                         <CardFooter><Badge color="danger" className="shadow" >Past</Badge></CardFooter>
                     </Card>
@@ -289,7 +291,7 @@ export default class Feed extends React.Component {
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">Start Date:</span> <Badge pill>{feeds.start.split('T')[0]}</Badge></ListGroupItem>
                                         <ListGroupItem className="d-flex justify-content-between"><span className="d-flex justify-content-between">End Date: </span> <Badge pill>{feeds.end.split('T')[0]}</Badge></ListGroupItem>
                                     </ListGroup></CardText>
-                                <Button color='success' className="shadow" outline block href={"/DumbFeed/" + feeds.electionId}>View Election results</Button>
+                                <Button color='success' className="shadow" outline block href={"/DumbResults/" + feeds.electionId}>View Election results</Button>
                                 <Button color='primary' className="shadow" outline block href={"/vote/" + feeds.electionId}>Go to election</Button>
                             </CardBody>
                             <CardFooter><Badge color="success" className="shadow" >Ongoing</Badge></CardFooter>
@@ -306,7 +308,6 @@ export default class Feed extends React.Component {
         } else {
             feedlist = "No Elections available";
         }
-
         return (
             <Container className="mt">
                 <Row>
@@ -344,6 +345,10 @@ export default class Feed extends React.Component {
                             </CardDeck>
                         </Container >
                     </Col>
+                </Row>
+                <Row>
+                    <h2>All-Access Election Feed</h2>
+                    <GeneralFeed profile = {this.props.profile}></GeneralFeed>
                 </Row>
             </Container>
 

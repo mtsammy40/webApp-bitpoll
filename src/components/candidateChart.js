@@ -54,7 +54,7 @@ export default class CandidateChart extends React.Component{
                 if(this.state.electionDataErr){
                     return <span>this.state.electionDataErr</span>;
                 }
-                return <img src={load} alt="Loading..." />;
+                return <p>No gender Data Available</p>;
             }
         }
         const FChart = (props)=>{   
@@ -76,7 +76,7 @@ export default class CandidateChart extends React.Component{
                     <Pie data={cdata}></Pie>
                     </div>
             } else {
-                return <img src={load} alt="Loading..." />;
+                return <p>No gender data available</p>;
             }
         }
         

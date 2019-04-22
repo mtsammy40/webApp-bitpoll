@@ -50,18 +50,6 @@ const Header = (props) => {
               <img src={transparency} width={600} alt="transparency"></img>
             </Col>
         </Row>
-        <Row>
-          <Card>
-            <CardBody className="shadow mt">
-              <CardTitle>
-                <h2>Register your Institution Today!!</h2>
-              </CardTitle>
-              <NewInst></NewInst>
-            </CardBody>
-          </Card>
-        </Row>
-        
-        
       </Container>
       <Row className="shadow mt text-center">
           <Col>

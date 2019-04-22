@@ -150,7 +150,7 @@ export default class UpdateFormReg extends React.Component{
               </FormGroup>
             </Col>
           </Row>       
-          <Input type="submit" value="Sign up" className="btn btn-success col-md-3 offset-md-9" />
+          <Input type="submit" value="Update" className="btn btn-success col-md-3 offset-md-9" />
         </Form>
             
         );

@@ -90,11 +90,10 @@ export default class NewElection extends React.Component {
         }
     }
     handleBlur(e) {
-        // want a multidimensional array? https://itnext.io/building-a-dynamic-controlled-form-in-react-together-794a44ee552c
-        this.validate(e);
+      console.log('on blur');
         var candidateNames = [];
         var categories = [];
-        for (var i = 1; i <= this.state.cand_no; i++) {
+        for (var i = 1; i <= this.state.form.cand_no; i++) {
             var name = document.getElementById("cand_name_" + i).value;
             var category = document.getElementById("cand_cat_" + i).value;
             candidateNames.push(name);
@@ -103,6 +102,7 @@ export default class NewElection extends React.Component {
         let {form} = this.state;
         form = {...form, candidateNames, categories };
         this.setState({ form });
+        console.log('after blur', this.state.form);
     }
     handleSubmit(e) {
 
@@ -185,7 +185,7 @@ export default class NewElection extends React.Component {
                  <Col md={6}>
                  <FormGroup>
                 <Label>Category for candidate {t.toString()} </Label>
-                <Input type="text" name="cand_cat" id={'cand_cat_' + t} dot={t.toString()} placeholder="Candidate Name" onBlur={this.handleBlur} required />
+                <Input type="text" name="cand_cat" id={'cand_cat_' + t} dot={t.toString()} placeholder="Aspiring Position" onBlur={this.handleBlur} required />
                 </FormGroup>
                 </Col>
             </Row>

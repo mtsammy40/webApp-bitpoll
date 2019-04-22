@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button, Container, Input, FormGroup, Label, Row, Col,
-    Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
-import Dp from '../../Images/man.svg';
+    Modal, ModalHeader, ModalBody, ModalFooter, ListGroup, ListGroupItem  } from 'reactstrap';
+import Dp from '../../Images/laptop.png';
 import '../../App.css';
 import Api from '../../api/api';
 import ResultsPie from '../charts/electionChart';
@@ -124,12 +124,11 @@ export default class ElectionCard extends React.Component{
             }
            
         });
-        this.ws = new WebSocket('ws://35.202.24.146:80/');
+        this.ws = new WebSocket('ws://35.202.24.146:3003/');
         this.ws.onopen = ()=>{
             console.log('WebSockets is a go-go-go');
         }
     }
-
     componentWillReceiveProps(){
         this.ws.onmessage = (e)=> {
             const event = JSON.parse(e.data);
@@ -153,6 +152,20 @@ export default class ElectionCard extends React.Component{
         let candOptions = this.state.candidates.map(c =>
             <option key={c.candidateId} value={c.candidateId} > {c.name} </option>
         );
+        if(this.state.election.start){
+            var start = this.state.election.start.split('T')[0];
+            var end = this.state.election.end.split('T')[0];
+        } else {
+            var start = 'Loading...';
+            var end = 'Loading....';
+        }
+        if(this.state.chartData){
+            var res;
+            var results = this.state.chartData.labels.map((l, i)=>{
+                console.log('l', l);
+               return <ListGroupItem>{l} : {this.state.chartData.datasets[0].data[i]}</ListGroupItem>
+            })
+        }
         return(
             <Container className="col-md-6">
                 <Card>
@@ -165,8 +178,8 @@ export default class ElectionCard extends React.Component{
                             <CardTitle><h1>{this.state.election.motion}</h1></CardTitle>
                             <CardSubtitle>{this.props.match.params.id}</CardSubtitle>
                             <CardText>
-                                <li>{this.state.election.start}</li>
-                                <li>{this.state.election.end}</li>
+                                <li>{start}</li>
+                                <li>{end}</li>
                             </CardText>
                             <form onSubmit={this.handleSubmit}>
                                 <FormGroup>
@@ -190,9 +203,11 @@ export default class ElectionCard extends React.Component{
                             <ModalHeader toggle={this.toggle}>Results for: {this.state.election.motion}</ModalHeader>
                             <ModalBody>
                                 <ResultsPie data={this.state.chartData} options={this.state.chartOptions}></ResultsPie>
+                                <ListGroup className="mt">
+                                    {results}
+                                </ListGroup>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
                                 <Button color="secondary" onClick={this.toggle}>Cancel</Button>
                             </ModalFooter>
                             </Modal>

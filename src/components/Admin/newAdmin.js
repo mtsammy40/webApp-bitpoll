@@ -9,6 +9,7 @@ export default class NewAdmin extends React.Component {
     this.state = {
       "gender": "male",
       nationality: 'Kenya',
+      county: 'NAIROBI',
       institution: this.props.insts[0],
       dob: moment().subtract(18, 'years').format('YYYY-MM-DD'),
       validate: {}
@@ -77,6 +78,7 @@ export default class NewAdmin extends React.Component {
     } else {
 
       this.setState({ [e.target.name]: e.target.value });
+      console.log('changed ', e.target.name);
     }
   }
   handleSubmit(e) {
@@ -169,7 +171,6 @@ export default class NewAdmin extends React.Component {
                 <FormFeedback invalid>
                   Uh oh! Looks like there is an issue with your email. Please input a correct email.
               </FormFeedback>
-
               </FormGroup>
             </Col>
           </Row>
@@ -204,7 +205,7 @@ export default class NewAdmin extends React.Component {
             <Col md={4}>
               <FormGroup>
                 <Label for="countytb">County</Label>
-                <Input type="select" name="county" id="countytb" onChange={this.handleChange} required >
+                <Input type="select" name="county" id="countytb" onChange={this.handleChange} value={this.state.county} required >
                 {countiesList}
                 </Input>
               </FormGroup>

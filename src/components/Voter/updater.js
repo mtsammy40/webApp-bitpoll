@@ -117,7 +117,7 @@ export default class UpdateForm extends React.Component{
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
+            <Col md={6} className="hidden">
             <FormGroup>
                 <Label for="dp">Dp</Label>
                 <Input type="text" name="dp" value= {this.props.profile.dp} onChange={this.handleChange} />
@@ -130,7 +130,7 @@ export default class UpdateForm extends React.Component{
               </FormGroup>
             </Col>
           </Row>         
-          <Input type="submit" value="Sign up" className="btn btn-success col-md-3 offset-md-9" />
+          <Input type="submit" value="Update" className="btn btn-success col-md-3 offset-md-9" />
         </Form>
           
             

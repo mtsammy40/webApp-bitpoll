@@ -20,6 +20,9 @@ export default class VoterProfile extends React.Component{
           }));
       }
     render(){
+        if(this.props.authorized === false){
+            return <Redirect to="/SignIn" />
+        }
         if(this.props.profile){
             switch(this.props.profile.$class){
                 case 'org.bitpoll.net.Admin':
@@ -60,7 +63,6 @@ export default class VoterProfile extends React.Component{
               <UpdateForm profile={this.props.profile}></UpdateForm>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.toggleUpdateProfile}>Do Something</Button>{' '}
             <Button color="secondary" onClick={this.toggleUpdateProfile}>Cancel</Button>
           </ModalFooter>
         </Modal>

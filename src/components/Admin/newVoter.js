@@ -239,7 +239,7 @@ export default class NewVoter extends React.Component {
                   invalid={this.state.validate && this.state.validate.nid === 'has-danger'}
                 />
                 <FormFeedback valid>
-                  A wonderful name!
+                  Valid, Thanks!
                 </FormFeedback>
                 <FormFeedback invalid>
                 There seems to be a problem with your name id. Is it 8-10 digits? 

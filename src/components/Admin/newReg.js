@@ -97,6 +97,7 @@ export default class NewReg extends React.Component {
             console.log('email failed', e);
           });
         alert('successful');
+        this.props.onSuccess();
       }).catch(error => {
         if(error.response && error.response.error.message.indexOf('already exists') > -1){
           alert('Id '+ this.state.form.id+' already exists as a Regulator!');
@@ -130,7 +131,7 @@ export default class NewReg extends React.Component {
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label for="emailtb">Parastatal Id:</Label>
+                <Label for="emailtb">Id:</Label>
                 <Input type="text" name="id" id="emailtb" placeholder="parastatal Id" onChange={this.handleChange}
                 valid={this.state.validate && this.state.validate.id === 'has-success'}
                 invalid={this.state.validate && this.state.validate.id === 'has-danger'}
